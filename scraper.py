@@ -679,6 +679,27 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
       background: #f5f5f5;
       padding: 20px;
     }}
+    .top-nav {{
+      max-width: 1400px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }}
+    .top-nav a {{
+      color: #3483fa;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      font-size: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }}
+    .top-nav a:hover {{
+      background: #3483fa;
+      color: white;
+    }}
     h1 {{
       text-align: center;
       color: #333;
@@ -1008,6 +1029,10 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
   </style>
 </head>
 <body>
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home">🏠 Inicio</a>
+    <a href="archive.html" class="nav-archive">📅 Ver archivo</a>
+  </nav>
   <h1>Ofertas del Día - Mercado Libre</h1>
   <p class="meta">Actualizado: {timestamp} | {len(offers)} ofertas (ordenadas por descuento)</p>
   {mt_html}
@@ -1019,6 +1044,26 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
 </body>
 </html>
 '''
+
+
+def update_offers_manifest(offers_dir: Path) -> None:
+    """Update manifest.json with list of all offer files, sorted by date (newest first)."""
+    offer_files = sorted(
+        [f.name for f in offers_dir.glob("offers-*.html")],
+        reverse=True  # Newest first
+    )
+    
+    manifest = {
+        "updated": datetime.now().isoformat(),
+        "latest": offer_files[0] if offer_files else None,
+        "files": offer_files
+    }
+    
+    manifest_path = offers_dir / "manifest.json"
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    
+    log.info(f"Updated manifest.json with {len(offer_files)} files")
 
 
 def fetch_top_offers_history(offers: list[dict], top_n: int = 3) -> list[dict]:
@@ -1068,9 +1113,16 @@ def main():
         
         html = generate_html(offers, featured_offers, mt_offers)
         
-        output_file = f"offers-{start_time.strftime('%Y-%m-%d')}.html"
+        # Ensure docs directory exists (GitHub Pages standard folder)
+        offers_dir = Path(__file__).parent / "docs"
+        offers_dir.mkdir(exist_ok=True)
+        
+        output_file = offers_dir / f"offers-{start_time.strftime('%Y-%m-%d')}.html"
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(html)
+        
+        # Update manifest.json with list of all offer files
+        update_offers_manifest(offers_dir)
         
         elapsed = (datetime.now() - start_time).total_seconds()
         log.info(f"\nOutput written to: {output_file}")

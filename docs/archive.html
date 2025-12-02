@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archivo de Ofertas - Mercado Libre Argentina</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: #ffa751;
+      text-decoration: none;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(90deg, #ffe259, #ffa751);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1.1rem;
+    }
+
+    .offers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .offer-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      transition: all 0.2s ease;
+    }
+
+    .offer-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateX(4px);
+    }
+
+    .offer-link.latest {
+      background: linear-gradient(135deg, rgba(255, 167, 81, 0.2), rgba(255, 226, 89, 0.1));
+      border-color: rgba(255, 167, 81, 0.4);
+    }
+
+    .offer-date {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .badge {
+      background: linear-gradient(90deg, #ffe259, #ffa751);
+      color: #1a1a2e;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 12px;
+      margin-left: 12px;
+    }
+
+    .offer-icon {
+      font-size: 1.5rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 48px;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: #ffa751;
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .empty-state h2 {
+      margin-bottom: 12px;
+      font-size: 1.5rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #ffa751;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html" class="back-link">← Volver a ofertas de hoy</a>
+      <h1>📅 Archivo de Ofertas</h1>
+      <p class="subtitle">Historial de ofertas diarias de Mercado Libre Argentina</p>
+    </header>
+
+    <div class="offers-list" id="offersList">
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Cargando archivo...</p>
+      </div>
+    </div>
+
+    <script>
+      const container = document.getElementById('offersList');
+
+      fetch('manifest.json')
+        .then(r => r.json())
+        .then(data => {
+          container.innerHTML = '';
+
+          if (!data.files || data.files.length === 0) {
+            container.innerHTML = `
+              <div class="empty-state">
+                <h2>📭 No hay ofertas guardadas</h2>
+                <p>Las ofertas se actualizan diariamente a las 8 AM (Argentina)</p>
+              </div>
+            `;
+            return;
+          }
+
+          data.files.forEach((file, index) => {
+            // Extract date from filename (offers-YYYY-MM-DD.html)
+            const dateMatch = file.match(/offers-(\d{4}-\d{2}-\d{2})\.html/);
+            const dateStr = dateMatch ? dateMatch[1] : file;
+
+            const link = document.createElement('a');
+            link.href = file;
+            link.className = 'offer-link' + (index === 0 ? ' latest' : '');
+
+            const badgeHtml = index === 0 ? '<span class="badge">MÁS RECIENTE</span>' : '';
+
+            link.innerHTML = `
+              <span class="offer-date">📅 ${dateStr}${badgeHtml}</span>
+              <span class="offer-icon">→</span>
+            `;
+
+            container.appendChild(link);
+          });
+        })
+        .catch(err => {
+          container.innerHTML = `
+            <div class="empty-state">
+              <h2>⚠️ Error al cargar</h2>
+              <p>No se pudo cargar el archivo de ofertas</p>
+            </div>
+          `;
+        });
+    </script>
+
+    <footer class="footer">
+      <p>Datos de <a href="https://www.mercadolibre.com.ar/ofertas" target="_blank">Mercado Libre</a> |
+        Historial de precios por <a href="https://mercadotrack.com" target="_blank">MercadoTrack</a></p>
+    </footer>
+  </div>
+</body>
+
+</html>
