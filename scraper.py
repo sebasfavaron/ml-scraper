@@ -72,7 +72,22 @@ MLA_ID_PATTERN = re.compile(r'MLA\d+')
 def fetch_page(base_params: dict, page_num: int) -> str:
     """Fetch a single page of offers."""
     params = {**base_params, "page": page_num}
+    log.debug(f"Fetching page {page_num} with params: {params}")
+    
+    start_time = datetime.now()
     response = requests.get(BASE_URL, params=params, headers=HEADERS, timeout=30)
+    elapsed = (datetime.now() - start_time).total_seconds()
+    
+    log.debug(f"Response: status={response.status_code}, size={len(response.text)} bytes, time={elapsed:.2f}s")
+    
+    # Log potential rate limiting indicators
+    if response.status_code == 429:
+        log.warning(f"RATE LIMITED (429) on page {page_num} - consider adding delays")
+    elif response.status_code == 503:
+        log.warning(f"SERVICE UNAVAILABLE (503) on page {page_num} - possible rate limiting")
+    elif elapsed > 5:
+        log.warning(f"Slow response ({elapsed:.2f}s) - possible throttling")
+    
     response.raise_for_status()
     return response.text
 
@@ -125,22 +140,42 @@ def extract_snapshots_json(text: str) -> list[dict] | None:
 
 def fetch_price_history(mla_id: str) -> list[dict] | None:
     """Fetch price history from MercadoTrack for a product."""
+    url = f"{MERCADOTRACK_URL}/{mla_id}"
+    log.debug(f"Fetching price history for {mla_id} from MercadoTrack")
+    
     try:
-        url = f"{MERCADOTRACK_URL}/{mla_id}"
+        start_time = datetime.now()
         response = requests.get(url, headers=HEADERS, timeout=15)
-        if response.status_code != 200:
+        elapsed = (datetime.now() - start_time).total_seconds()
+        
+        log.debug(f"MercadoTrack response: status={response.status_code}, time={elapsed:.2f}s")
+        
+        if response.status_code == 429:
+            log.warning(f"MercadoTrack RATE LIMITED (429) for {mla_id}")
+            return None
+        elif response.status_code != 200:
+            log.debug(f"MercadoTrack returned {response.status_code} for {mla_id}")
             return None
         
         # Extract snapshots JSON from the HTML
         snapshots = extract_snapshots_json(response.text)
         if not snapshots:
+            log.debug(f"No price snapshots found for {mla_id}")
             return None
+        
+        log.info(f"Found {len(snapshots)} price snapshots for {mla_id}")
         
         # Sort by date and return last 90 days of data
         snapshots.sort(key=lambda x: x.get("date", ""))
         return snapshots[-90:] if len(snapshots) > 90 else snapshots
+    except requests.exceptions.Timeout:
+        log.error(f"Timeout fetching price history for {mla_id}")
+        return None
+    except requests.exceptions.RequestException as e:
+        log.error(f"Network error fetching price history for {mla_id}: {e}")
+        return None
     except Exception as e:
-        print(f"    Error fetching price history for {mla_id}: {e}")
+        log.error(f"Unexpected error fetching price history for {mla_id}: {e}")
         return None
 
 
@@ -259,11 +294,11 @@ def scrape_offers(pages_per_source: int = 3) -> list[dict]:
     seen_urls = set()  # Deduplicate by URL
     
     for source in OFFER_SOURCES:
-        print(f"\n{source['name']}:")
-        print("-" * 40)
+        log.info(f"\n{source['name']}:")
+        log.info("-" * 40)
         
         for page_num in range(1, pages_per_source + 1):
-            print(f"  Fetching page {page_num}...")
+            log.info(f"  Fetching page {page_num}...")
             try:
                 html = fetch_page(source["params"], page_num)
                 state = extract_preloaded_state(html)
@@ -277,13 +312,22 @@ def scrape_offers(pages_per_source: int = 3) -> list[dict]:
                         new_offers.append(offer)
                 
                 all_offers.extend(new_offers)
-                print(f"    Found {len(offers)} offers ({len(new_offers)} new)")
+                log.info(f"    Found {len(offers)} offers ({len(new_offers)} new)")
+            except requests.exceptions.HTTPError as e:
+                log.error(f"HTTP error on {source['name']} page {page_num}: {e}")
+            except requests.exceptions.Timeout:
+                log.error(f"Timeout on {source['name']} page {page_num}")
+            except requests.exceptions.RequestException as e:
+                log.error(f"Network error on {source['name']} page {page_num}: {e}")
+            except ValueError as e:
+                log.error(f"Parse error on {source['name']} page {page_num}: {e}")
             except Exception as e:
-                print(f"    Error on page {page_num}: {e}")
+                log.error(f"Unexpected error on {source['name']} page {page_num}: {type(e).__name__}: {e}")
     
     # Sort by discount percentage (highest first)
     all_offers.sort(key=lambda x: x.get("discount", 0), reverse=True)
     
+    log.debug(f"Total unique offers after deduplication: {len(all_offers)}")
     return all_offers
 
 
@@ -388,7 +432,7 @@ def generate_featured_html(featured_offers: list[dict]) -> str:
   </section>'''
 
 
-def generate_html(offers: list[dict], featured_offers: list[dict] = None) -> str:
+def generate_html(offers: list[dict], featured_offers: list[dict] | None = None) -> str:
     """Generate HTML output with offer cards."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     
@@ -643,25 +687,25 @@ def generate_html(offers: list[dict], featured_offers: list[dict] = None) -> str
 
 def fetch_top_offers_history(offers: list[dict], top_n: int = 3) -> list[dict]:
     """Fetch price history for the top N discounted offers."""
-    print(f"\n🔍 Verificando historial de precios para top {top_n} ofertas...")
-    print("-" * 40)
+    log.info(f"\n🔍 Verificando historial de precios para top {top_n} ofertas...")
+    log.info("-" * 40)
     
     featured = []
     for i, offer in enumerate(offers[:top_n]):
         mla_id = extract_mla_id(offer["link"])
-        print(f"  [{i+1}/{top_n}] {offer['name'][:50]}...")
+        log.info(f"  [{i+1}/{top_n}] {offer['name'][:50]}...")
         
         if mla_id:
-            print(f"    → Buscando {mla_id} en MercadoTrack...")
+            log.info(f"    → Buscando {mla_id} en MercadoTrack...")
             snapshots = fetch_price_history(mla_id)
             analysis = analyze_price_history(snapshots, offer.get("price", 0))
             offer_copy = offer.copy()
             offer_copy["price_analysis"] = analysis
             offer_copy["mla_id"] = mla_id
             featured.append(offer_copy)
-            print(f"    → {analysis['message']}")
+            log.info(f"    → {analysis['message']}")
         else:
-            print(f"    → No se pudo extraer MLA ID")
+            log.warning(f"    → No se pudo extraer MLA ID from {offer['link']}")
             offer_copy = offer.copy()
             offer_copy["price_analysis"] = {"status": "unknown", "message": "ID no encontrado"}
             featured.append(offer_copy)
@@ -670,22 +714,37 @@ def fetch_top_offers_history(offers: list[dict], top_n: int = 3) -> list[dict]:
 
 
 def main():
-    print("Mercado Libre Offers Scraper")
-    print("=" * 40)
+    start_time = datetime.now()
+    log.info("=" * 50)
+    log.info("Mercado Libre Offers Scraper - Run Started")
+    log.info(f"Timestamp: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+    log.info("=" * 50)
     
-    offers = scrape_offers(pages_per_source=3)
-    print(f"\nTotal offers collected: {len(offers)}")
-    
-    # Fetch price history for top 3 discounted offers
-    featured_offers = fetch_top_offers_history(offers, top_n=3)
-    
-    html = generate_html(offers, featured_offers)
-    
-    output_file = "offers.html"
-    with open(output_file, "w", encoding="utf-8") as f:
-        f.write(html)
-    
-    print(f"\nOutput written to: {output_file}")
+    try:
+        offers = scrape_offers(pages_per_source=3)
+        log.info(f"\nTotal offers collected: {len(offers)}")
+        
+        # Fetch price history for top 3 discounted offers
+        featured_offers = fetch_top_offers_history(offers, top_n=3)
+        
+        html = generate_html(offers, featured_offers)
+        
+        output_file = f"offers-{start_time.strftime('%Y-%m-%d')}.html"
+        with open(output_file, "w", encoding="utf-8") as f:
+            f.write(html)
+        
+        elapsed = (datetime.now() - start_time).total_seconds()
+        log.info(f"\nOutput written to: {output_file}")
+        log.info(f"Run completed successfully in {elapsed:.1f}s")
+        log.info(f"Summary: {len(offers)} offers, {len(featured_offers)} with price history")
+        
+    except Exception as e:
+        log.error(f"Fatal error during scrape: {type(e).__name__}: {e}")
+        raise
+    finally:
+        log.info("=" * 50)
+        log.info("Scraper run finished")
+        log.info("=" * 50 + "\n")
 
 
 if __name__ == "__main__":
