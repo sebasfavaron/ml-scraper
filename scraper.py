@@ -48,6 +48,7 @@ log = setup_logging()
 
 BASE_URL = "https://www.mercadolibre.com.ar/ofertas"
 MERCADOTRACK_URL = "https://mercadotrack.com/MLA/trackings"
+MERCADOTRACK_FEATURED_URL = "https://mercadotrack.com/MLA"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
@@ -67,6 +68,156 @@ PRELOADED_STATE_PATTERN = re.compile(
 # Regex to extract MLA product ID from URLs
 MLA_ID_PATTERN = re.compile(r'MLA\d+')
 
+# Regex to extract image ID from mlstatic URLs
+MLSTATIC_IMAGE_PATTERN = re.compile(r'https?://http2\.mlstatic\.com/D_([^-]+)-')
+
+
+
+def fetch_mercadotrack_featured() -> list[dict]:
+    """Fetch featured offers from MercadoTrack Argentina."""
+    log.info("\n📊 Fetching MercadoTrack Featured Offers...")
+    log.info("-" * 40)
+    
+    try:
+        start_time = datetime.now()
+        response = requests.get(MERCADOTRACK_FEATURED_URL, headers=HEADERS, timeout=30)
+        elapsed = (datetime.now() - start_time).total_seconds()
+        
+        log.debug(f"MercadoTrack response: status={response.status_code}, time={elapsed:.2f}s")
+        
+        if response.status_code != 200:
+            log.error(f"MercadoTrack returned {response.status_code}")
+            return []
+        
+        html = response.text
+        offers = []
+        
+        # Parse offer cards from the HTML
+        # Look for links to /MLA/trackings/MLA{id} in the "Ofertas destacadas" section
+        # The section is between "Ofertas destacadas" and "Ultimos trackeados"
+        featured_start = html.find("Ofertas destacadas")
+        featured_end = html.find("Ultimos trackeados")
+        
+        if featured_start == -1:
+            log.warning("Could not find 'Ofertas destacadas' section")
+            return []
+        
+        featured_section = html[featured_start:featured_end] if featured_end > featured_start else html[featured_start:]
+        
+        # Extract all MLA IDs from tracking links
+        tracking_pattern = re.compile(r'/MLA/trackings/(MLA\d+)')
+        mla_ids = tracking_pattern.findall(featured_section)
+        
+        # Remove duplicates while preserving order
+        seen = set()
+        unique_mla_ids = []
+        for mla_id in mla_ids:
+            if mla_id not in seen:
+                seen.add(mla_id)
+                unique_mla_ids.append(mla_id)
+        
+        log.info(f"  Found {len(unique_mla_ids)} featured offers")
+        
+        # Extract product data for each MLA ID
+        for mla_id in unique_mla_ids:
+            # Find the block containing this MLA ID
+            idx = featured_section.find(f'/MLA/trackings/{mla_id}')
+            if idx == -1:
+                continue
+            
+            # Get a chunk of HTML around this link to extract data
+            block_start = max(0, idx - 100)
+            block_end = min(len(featured_section), idx + 2000)
+            block = featured_section[block_start:block_end]
+            
+            # Extract product name - look for the title after the image
+            name = None
+            # Try to find text content after "Featured image" alt text
+            name_patterns = [
+                re.compile(r'<p[^>]*>([^<]{10,200})</p>'),  # First substantial <p> tag
+            ]
+            
+            for pattern in name_patterns:
+                matches = pattern.findall(block)
+                for match in matches:
+                    # Skip prices (they contain $)
+                    if '$' not in match and 'Hace' not in match and len(match.strip()) > 10:
+                        name = match.strip()
+                        break
+                if name:
+                    break
+            
+            # Extract prices using pattern like "$ 340.564,03"
+            price_pattern = re.compile(r'\$\s*([\d.,]+)')
+            prices = price_pattern.findall(block)
+            
+            original_price = 0
+            current_price = 0
+            if len(prices) >= 2:
+                # First price is original, second is current (discounted)
+                try:
+                    original_price = float(prices[0].replace('.', '').replace(',', '.'))
+                    current_price = float(prices[1].replace('.', '').replace(',', '.'))
+                except ValueError:
+                    pass
+            elif len(prices) == 1:
+                try:
+                    current_price = float(prices[0].replace('.', '').replace(',', '.'))
+                except ValueError:
+                    pass
+            
+            # Extract discount percentage - look for patterns like "-11,85%" or "-11.85%"
+            # Avoid matching percentages in product names (like "87% Tkl")
+            discount = 0
+            # Look for discount badge pattern: negative percentage with optional quotes
+            discount_pattern = re.compile(r'[>"\'](-[\d.,]+%)["\']?<')
+            discount_matches = discount_pattern.findall(block)
+            if discount_matches:
+                try:
+                    # Remove the leading dash and trailing %
+                    discount_str = discount_matches[0].strip('-').strip('%')
+                    discount = float(discount_str.replace(',', '.'))
+                except ValueError:
+                    pass
+            
+            # Calculate discount if we have both prices and no explicit discount
+            if discount == 0 and original_price > 0 and current_price > 0 and original_price > current_price:
+                discount = round((1 - current_price / original_price) * 100, 2)
+            
+            # Extract image URL
+            image_url = None
+            image_pattern = re.compile(r'https?://http2\.mlstatic\.com/D_[^"\'>\s]+')
+            image_matches = image_pattern.findall(block)
+            if image_matches:
+                image_url = image_matches[0]
+            
+            # Build the offer object
+            if name or mla_id:
+                offer = {
+                    "name": name or f"Producto {mla_id}",
+                    "link": f"https://mercadolibre.com.ar/p/{mla_id}",
+                    "mercadotrack_link": f"https://mercadotrack.com/MLA/trackings/{mla_id}",
+                    "image": image_url or f"https://http2.mlstatic.com/D_{mla_id}-O.jpg",
+                    "price": current_price,
+                    "original_price": original_price,
+                    "discount": discount,
+                    "mla_id": mla_id
+                }
+                offers.append(offer)
+                log.debug(f"  → {name[:50] if name else mla_id}... ({discount:.1f}% OFF)")
+        
+        log.info(f"  Successfully parsed {len(offers)} offers")
+        return offers
+        
+    except requests.exceptions.Timeout:
+        log.error("Timeout fetching MercadoTrack featured offers")
+        return []
+    except requests.exceptions.RequestException as e:
+        log.error(f"Network error fetching MercadoTrack: {e}")
+        return []
+    except Exception as e:
+        log.error(f"Unexpected error fetching MercadoTrack: {type(e).__name__}: {e}")
+        return []
 
 
 def fetch_page(base_params: dict, page_num: int) -> str:
@@ -355,6 +506,59 @@ def generate_sparkline_svg(prices: list[float], width: int = 200, height: int = 
     </svg>'''
 
 
+def generate_mercadotrack_featured_html(mt_offers: list[dict]) -> str:
+    """Generate HTML for MercadoTrack featured offers section."""
+    if not mt_offers:
+        return ""
+    
+    cards_html = ""
+    for offer in mt_offers:
+        safe_name = (
+            offer["name"]
+            .replace("&", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace('"', "&quot;")
+        )
+        discount = offer.get("discount", 0)
+        price = offer.get("price", 0)
+        original_price = offer.get("original_price", 0)
+        price_formatted = f"${price:,.0f}".replace(",", ".")
+        original_formatted = f"${original_price:,.0f}".replace(",", ".") if original_price > 0 else ""
+        
+        discount_badge = f'<span class="mt-discount">-{discount:.1f}%</span>' if discount > 0 else ""
+        original_html = f'<span class="mt-original">{original_formatted}</span>' if original_price > 0 else ""
+        
+        image_url = offer.get("image", "")
+        mercadotrack_link = offer.get("mercadotrack_link", "#")
+        
+        cards_html += f'''
+      <a href="{mercadotrack_link}" target="_blank" class="mt-card">
+        <div class="mt-image">
+          {discount_badge}
+          <img src="{image_url}" alt="{safe_name}" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">{safe_name}</span>
+          <div class="mt-prices">
+            {original_html}
+            <span class="mt-price">{price_formatted}</span>
+          </div>
+        </div>
+      </a>'''
+    
+    return f'''
+  <section class="mercadotrack-section">
+    <div class="mt-header">
+      <h2>🏷️ Ofertas Destacadas - MercadoTrack</h2>
+      <a href="https://mercadotrack.com/MLA" target="_blank" class="mt-view-all">Ver todas en MercadoTrack →</a>
+    </div>
+    <p class="mt-subtitle">Ofertas con historial de precios verificado por la comunidad de MercadoTrack</p>
+    <div class="mt-grid">{cards_html}
+    </div>
+  </section>'''
+
+
 def generate_featured_html(featured_offers: list[dict]) -> str:
     """Generate HTML for featured offers with price history."""
     if not featured_offers:
@@ -432,10 +636,11 @@ def generate_featured_html(featured_offers: list[dict]) -> str:
   </section>'''
 
 
-def generate_html(offers: list[dict], featured_offers: list[dict] | None = None) -> str:
+def generate_html(offers: list[dict], featured_offers: list[dict] | None = None, mt_offers: list[dict] | None = None) -> str:
     """Generate HTML output with offer cards."""
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
     
+    mt_html = generate_mercadotrack_featured_html(mt_offers) if mt_offers else ""
     featured_html = generate_featured_html(featured_offers) if featured_offers else ""
     
     cards_html = ""
@@ -488,6 +693,122 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None)
       color: #666;
       margin-bottom: 20px;
       font-size: 14px;
+    }}
+    
+    /* MercadoTrack Featured Section */
+    .mercadotrack-section {{
+      max-width: 1400px;
+      margin: 0 auto 32px;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd23f 100%);
+      border-radius: 16px;
+      padding: 24px;
+      color: white;
+    }}
+    .mt-header {{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }}
+    .mercadotrack-section h2 {{
+      color: white;
+      font-size: 22px;
+      margin: 0;
+    }}
+    .mt-view-all {{
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: background 0.2s;
+    }}
+    .mt-view-all:hover {{
+      background: rgba(0,0,0,0.35);
+    }}
+    .mt-subtitle {{
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      margin: 8px 0 20px;
+    }}
+    .mt-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }}
+    .mt-card {{
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }}
+    .mt-card:hover {{
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }}
+    .mt-image {{
+      position: relative;
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }}
+    .mt-image img {{
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }}
+    .mt-discount {{
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #e53935;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }}
+    .mt-info {{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }}
+    .mt-name {{
+      font-size: 13px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #333;
+    }}
+    .mt-prices {{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }}
+    .mt-original {{
+      font-size: 12px;
+      color: #999;
+      text-decoration: line-through;
+    }}
+    .mt-price {{
+      font-size: 16px;
+      font-weight: bold;
+      color: #00a650;
     }}
     
     /* Featured Section */
@@ -676,6 +997,7 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None)
 <body>
   <h1>Ofertas del Día - Mercado Libre</h1>
   <p class="meta">Actualizado: {timestamp} | {len(offers)} ofertas (ordenadas por descuento)</p>
+  {mt_html}
   {featured_html}
   <h3 class="all-offers-title">Todas las ofertas</h3>
   <div class="grid">{cards_html}
@@ -721,13 +1043,16 @@ def main():
     log.info("=" * 50)
     
     try:
+        # Fetch MercadoTrack featured offers first
+        mt_offers = fetch_mercadotrack_featured()
+        
         offers = scrape_offers(pages_per_source=3)
         log.info(f"\nTotal offers collected: {len(offers)}")
         
         # Fetch price history for top 3 discounted offers
         featured_offers = fetch_top_offers_history(offers, top_n=3)
         
-        html = generate_html(offers, featured_offers)
+        html = generate_html(offers, featured_offers, mt_offers)
         
         output_file = f"offers-{start_time.strftime('%Y-%m-%d')}.html"
         with open(output_file, "w", encoding="utf-8") as f:
@@ -736,7 +1061,7 @@ def main():
         elapsed = (datetime.now() - start_time).total_seconds()
         log.info(f"\nOutput written to: {output_file}")
         log.info(f"Run completed successfully in {elapsed:.1f}s")
-        log.info(f"Summary: {len(offers)} offers, {len(featured_offers)} with price history")
+        log.info(f"Summary: {len(offers)} offers, {len(featured_offers)} with price history, {len(mt_offers)} MercadoTrack featured")
         
     except Exception as e:
         log.error(f"Fatal error during scrape: {type(e).__name__}: {e}")
