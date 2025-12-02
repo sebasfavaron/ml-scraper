@@ -1030,8 +1030,8 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="nav-home">🏠 Inicio</a>
-    <a href="archive.html" class="nav-archive">📅 Ver archivo</a>
+    <a href="index.html" class="nav-home" target="_top">🏠 Inicio</a>
+    <a href="archive.html" class="nav-archive" target="_top">📅 Ver archivo</a>
   </nav>
   <h1>Ofertas del Día - Mercado Libre</h1>
   <p class="meta">Actualizado: {timestamp} | {len(offers)} ofertas (ordenadas por descuento)</p>
@@ -1044,26 +1044,6 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
 </body>
 </html>
 '''
-
-
-def update_offers_manifest(offers_dir: Path) -> None:
-    """Update manifest.json with list of all offer files, sorted by date (newest first)."""
-    offer_files = sorted(
-        [f.name for f in offers_dir.glob("offers-*.html")],
-        reverse=True  # Newest first
-    )
-    
-    manifest = {
-        "updated": datetime.now().isoformat(),
-        "latest": offer_files[0] if offer_files else None,
-        "files": offer_files
-    }
-    
-    manifest_path = offers_dir / "manifest.json"
-    with open(manifest_path, "w", encoding="utf-8") as f:
-        json.dump(manifest, f, indent=2, ensure_ascii=False)
-    
-    log.info(f"Updated manifest.json with {len(offer_files)} files")
 
 
 def fetch_top_offers_history(offers: list[dict], top_n: int = 3) -> list[dict]:
@@ -1120,9 +1100,6 @@ def main():
         output_file = offers_dir / f"offers-{start_time.strftime('%Y-%m-%d')}.html"
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(html)
-        
-        # Update manifest.json with list of all offer files
-        update_offers_manifest(offers_dir)
         
         elapsed = (datetime.now() - start_time).total_seconds()
         log.info(f"\nOutput written to: {output_file}")
