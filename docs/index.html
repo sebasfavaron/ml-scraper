@@ -12,76 +12,50 @@
       padding: 0;
     }
 
+    html,
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-      min-height: 100vh;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      height: 100%;
+      overflow: hidden;
     }
 
-    .loading {
-      text-align: center;
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #ffa751;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 20px;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 12px;
-    }
-
-    p {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    a {
-      color: #ffa751;
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
     }
   </style>
 </head>
 
 <body>
-  <div class="loading">
-    <div class="spinner"></div>
-    <h1>Cargando ofertas de hoy...</h1>
-    <p>Si no redirige automáticamente, <a href="archive.html">ver archivo</a></p>
-  </div>
+  <iframe id="offers-frame" title="Ofertas del Día - Mercado Libre Argentina"></iframe>
 
   <script>
-    // Load manifest and redirect to latest offers
-    fetch('manifest.json')
-      .then(r => r.json())
-      .then(data => {
-        if (data.latest) {
-          window.location.replace(data.latest);
-        } else if (data.files && data.files.length > 0) {
-          window.location.replace(data.files[0]);
-        } else {
-          window.location.replace('archive.html');
+    // Try today's date first, fallback to archive
+    const today = new Date().toISOString().split('T')[0];
+    const iframe = document.getElementById('offers-frame');
+    let loaded = false;
+
+    iframe.onload = function () {
+      try {
+        // Check if page actually loaded content (same-origin only)
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (doc && doc.body && doc.body.innerHTML.length > 100) {
+          loaded = true;
+        } else if (!loaded) {
+          iframe.src = 'archive.html';
         }
-      })
-      .catch(() => {
-        // Fallback: try today's date
-        const today = new Date().toISOString().split('T')[0];
-        window.location.replace(`offers-${today}.html`);
-      });
+      } catch (e) {
+        // Cross-origin or other error - assume it loaded
+        loaded = true;
+      }
+    };
+
+    iframe.src = `offers-${today}.html`;
+
+    // Fallback timeout in case onload doesn't fire properly
+    setTimeout(() => {
+      if (!loaded) iframe.src = 'archive.html';
+    }, 3000);
   </script>
 </body>
 

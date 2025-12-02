@@ -159,7 +159,7 @@
 <body>
   <div class="container">
     <header>
-      <a href="index.html" class="back-link">← Volver a ofertas de hoy</a>
+      <a href="index.html" class="back-link" target="_top">← Volver a ofertas de hoy</a>
       <h1>📅 Archivo de Ofertas</h1>
       <p class="subtitle">Historial de ofertas diarias de Mercado Libre Argentina</p>
     </header>
@@ -173,49 +173,68 @@
 
     <script>
       const container = document.getElementById('offersList');
+      const DAYS_TO_CHECK = 90; // Check last 90 days for offer files
 
-      fetch('manifest.json')
-        .then(r => r.json())
-        .then(data => {
-          container.innerHTML = '';
+      async function discoverOfferFiles() {
+        const files = [];
+        const today = new Date();
 
-          if (!data.files || data.files.length === 0) {
-            container.innerHTML = `
-              <div class="empty-state">
-                <h2>📭 No hay ofertas guardadas</h2>
-                <p>Las ofertas se actualizan diariamente a las 8 AM (Argentina)</p>
-              </div>
-            `;
-            return;
-          }
+        // Generate dates for the last N days
+        const checkPromises = [];
+        for (let i = 0; i < DAYS_TO_CHECK; i++) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          const dateStr = date.toISOString().split('T')[0];
+          const filename = `offers-${dateStr}.html`;
 
-          data.files.forEach((file, index) => {
-            // Extract date from filename (offers-YYYY-MM-DD.html)
-            const dateMatch = file.match(/offers-(\d{4}-\d{2}-\d{2})\.html/);
-            const dateStr = dateMatch ? dateMatch[1] : file;
+          // Use HEAD request to check if file exists (faster than GET)
+          checkPromises.push(
+            fetch(filename, { method: 'HEAD' })
+              .then(r => r.ok ? { date: dateStr, file: filename } : null)
+              .catch(() => null)
+          );
+        }
 
-            const link = document.createElement('a');
-            link.href = file;
-            link.className = 'offer-link' + (index === 0 ? ' latest' : '');
+        const results = await Promise.all(checkPromises);
+        return results.filter(r => r !== null);
+      }
 
-            const badgeHtml = index === 0 ? '<span class="badge">MÁS RECIENTE</span>' : '';
+      discoverOfferFiles().then(files => {
+        container.innerHTML = '';
 
-            link.innerHTML = `
-              <span class="offer-date">📅 ${dateStr}${badgeHtml}</span>
-              <span class="offer-icon">→</span>
-            `;
-
-            container.appendChild(link);
-          });
-        })
-        .catch(err => {
+        if (files.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
-              <h2>⚠️ Error al cargar</h2>
-              <p>No se pudo cargar el archivo de ofertas</p>
+              <h2>📭 No hay ofertas guardadas</h2>
+              <p>Las ofertas se actualizan diariamente a las 8 AM (Argentina)</p>
             </div>
           `;
+          return;
+        }
+
+        files.forEach((item, index) => {
+          const link = document.createElement('a');
+          link.href = item.file;
+          link.target = '_top'; // Break out of iframe if embedded
+          link.className = 'offer-link' + (index === 0 ? ' latest' : '');
+
+          const badgeHtml = index === 0 ? '<span class="badge">MÁS RECIENTE</span>' : '';
+
+          link.innerHTML = `
+            <span class="offer-date">📅 ${item.date}${badgeHtml}</span>
+            <span class="offer-icon">→</span>
+          `;
+
+          container.appendChild(link);
         });
+      }).catch(err => {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h2>⚠️ Error al cargar</h2>
+            <p>No se pudo cargar el archivo de ofertas</p>
+          </div>
+        `;
+      });
     </script>
 
     <footer class="footer">
