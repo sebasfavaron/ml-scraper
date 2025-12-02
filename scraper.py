@@ -630,7 +630,7 @@ def generate_featured_html(featured_offers: list[dict]) -> str:
     return f'''
   <section class="featured-section">
     <h2>🔍 Top 3 Ofertas - Análisis de Precio</h2>
-    <p class="featured-subtitle">Verificamos el historial de precios para confirmar si son ofertas reales</p>
+    <p class="featured-subtitle">Historial de precios verificado con <a href="https://mercadotrack.com" target="_blank" style="color: #3483fa;">MercadoTrack</a> para confirmar si son ofertas reales</p>
     <div class="featured-grid">{featured_cards}
     </div>
   </section>'''
@@ -930,8 +930,21 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
     /* Regular Grid */
     .all-offers-title {{
       max-width: 1400px;
-      margin: 0 auto 16px;
+      margin: 0 auto 8px;
       color: #333;
+    }}
+    .all-offers-subtitle {{
+      max-width: 1400px;
+      margin: 0 auto 16px;
+      color: #666;
+      font-size: 14px;
+    }}
+    .all-offers-subtitle a {{
+      color: #3483fa;
+      text-decoration: none;
+    }}
+    .all-offers-subtitle a:hover {{
+      text-decoration: underline;
     }}
     .grid {{
       display: grid;
@@ -1000,6 +1013,7 @@ def generate_html(offers: list[dict], featured_offers: list[dict] | None = None,
   {mt_html}
   {featured_html}
   <h3 class="all-offers-title">Todas las ofertas</h3>
+  <p class="all-offers-subtitle">Ofertas del Día y Ofertas Relámpago extraídas de <a href="https://www.mercadolibre.com.ar/ofertas" target="_blank">mercadolibre.com.ar/ofertas</a>, ordenadas por descuento</p>
   <div class="grid">{cards_html}
   </div>
 </body>
