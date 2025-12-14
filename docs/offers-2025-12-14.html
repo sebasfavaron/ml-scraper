@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mercado Libre - Ofertas del Día</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+    .top-nav {
+      max-width: 1400px;
+      margin: 0 auto 20px;
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .top-nav a {
+      color: #3483fa;
+      text-decoration: none;
+      padding: 8px 16px;
+      background: white;
+      border-radius: 20px;
+      font-size: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: all 0.2s;
+    }
+    .top-nav a:hover {
+      background: #3483fa;
+      color: white;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    h2 {
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .meta {
+      text-align: center;
+      color: #666;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    
+    /* MercadoTrack Featured Section */
+    .mercadotrack-section {
+      max-width: 1400px;
+      margin: 0 auto 32px;
+      background: linear-gradient(135deg, #ff6b35 0%, #f7931e 50%, #ffd23f 100%);
+      border-radius: 16px;
+      padding: 24px;
+      color: white;
+    }
+    .mt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .mercadotrack-section h2 {
+      color: white;
+      font-size: 22px;
+      margin: 0;
+    }
+    .mt-view-all {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      background: rgba(0,0,0,0.2);
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: background 0.2s;
+    }
+    .mt-view-all:hover {
+      background: rgba(0,0,0,0.35);
+    }
+    .mt-subtitle {
+      color: rgba(255,255,255,0.85);
+      font-size: 14px;
+      margin: 8px 0 20px;
+    }
+    .mt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .mt-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .mt-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .mt-image {
+      position: relative;
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      background: white;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mt-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .mt-discount {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #e53935;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .mt-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .mt-name {
+      font-size: 13px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #333;
+    }
+    .mt-prices {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mt-original {
+      font-size: 12px;
+      color: #999;
+      text-decoration: line-through;
+    }
+    .mt-price {
+      font-size: 16px;
+      font-weight: bold;
+      color: #00a650;
+    }
+    
+    /* Featured Section */
+    .featured-section {
+      max-width: 1400px;
+      margin: 0 auto 40px;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border-radius: 16px;
+      padding: 24px;
+      color: white;
+    }
+    .featured-section h2 {
+      color: white;
+      font-size: 22px;
+    }
+    .featured-subtitle {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 20px;
+    }
+    .featured-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+    }
+    .featured-image {
+      position: relative;
+      background: white;
+      border-radius: 8px;
+      padding: 8px;
+    }
+    .featured-image img {
+      width: 100%;
+      height: 120px;
+      object-fit: contain;
+    }
+    .featured-image .discount {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #00a650;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .featured-info {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .featured-title {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .featured-title:hover {
+      text-decoration: underline;
+    }
+    .featured-price {
+      font-size: 24px;
+      font-weight: bold;
+      color: #00a650;
+    }
+    .price-history {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .analysis-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      color: white;
+      width: fit-content;
+    }
+    .sparkline {
+      margin: 4px 0;
+    }
+    .price-stats {
+      display: flex;
+      gap: 12px;
+      font-size: 11px;
+      color: #999;
+    }
+    .price-stats span {
+      display: inline-block;
+    }
+    .mercadotrack-link {
+      color: #3483fa;
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .mercadotrack-link:hover {
+      text-decoration: underline;
+    }
+    .no-data {
+      color: #666;
+      font-size: 12px;
+      font-style: italic;
+    }
+    
+    /* Regular Grid */
+    .all-offers-title {
+      max-width: 1400px;
+      margin: 0 auto 8px;
+      color: #333;
+    }
+    .all-offers-subtitle {
+      max-width: 1400px;
+      margin: 0 auto 16px;
+      color: #666;
+      font-size: 14px;
+    }
+    .all-offers-subtitle a {
+      color: #3483fa;
+      text-decoration: none;
+    }
+    .all-offers-subtitle a:hover {
+      text-decoration: underline;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .card a {
+      color: #3483fa;
+      text-decoration: none;
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .card a:hover {
+      text-decoration: underline;
+    }
+    .discount {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #00a650;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    
+    @media (max-width: 480px) {
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+      .featured-card {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="nav-home" target="_top">🏠 Inicio</a>
+    <a href="archive.html" class="nav-archive" target="_top">📅 Ver archivo</a>
+  </nav>
+  <h1>Ofertas del Día - Mercado Libre</h1>
+  <p class="meta">Actualizado: 2025-12-14 11:15 | 283 ofertas (ordenadas por descuento)</p>
+  
+  <section class="mercadotrack-section">
+    <div class="mt-header">
+      <h2>🏷️ Ofertas Destacadas - MercadoTrack</h2>
+      <a href="https://mercadotrack.com/MLA" target="_blank" class="mt-view-all">Ver todas en MercadoTrack →</a>
+    </div>
+    <p class="mt-subtitle">Ofertas con historial de precios verificado por la comunidad de MercadoTrack</p>
+    <div class="mt-grid">
+      <a href="https://mercadotrack.com/MLA/trackings/MLA899795064" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-2.8%</span>
+          <img src="https://http2.mlstatic.com/D_617632-MLA44236978345_122020-O.jpg" alt="Cortinas Blackout Estampadas Con Pasabarral Y Agarraderas" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Cortinas Blackout Estampadas Con Pasabarral Y Agarraderas</span>
+          <div class="mt-prices">
+            <span class="mt-original">$63.313</span>
+            <span class="mt-price">$61.523</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA935245184" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-3.2%</span>
+          <img src="http://http2.mlstatic.com/D_600142-MLA47179540870_082021-O.jpg" alt="Efecto Led Big Dipper Lm0910rg 3 Barras 3 Leds 10w Prof" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Efecto Led Big Dipper Lm0910rg 3 Barras 3 Leds 10w Prof</span>
+          <div class="mt-prices">
+            <span class="mt-original">$413.900</span>
+            <span class="mt-price">$400.700</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1961388330" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-4.0%</span>
+          <img src="http://http2.mlstatic.com/D_681573-MLA80712990515_112024-O.jpg" alt="Juego De Sábanas Onix 600h Queen Size Color Beige Diseño Liso Super Suave Linea Premium Hotelera Gemma Home Lagam" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Juego De Sábanas Onix 600h Queen Size Color Beige Diseño Liso Super Suave Linea Premium Hotelera Gemma Home Lagam</span>
+          <div class="mt-prices">
+            <span class="mt-original">$51.955</span>
+            <span class="mt-price">$49.900</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1139183735" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-13.8%</span>
+          <img src="http://http2.mlstatic.com/D_888981-MLA50108550519_052022-O.jpg" alt="Soldador De Estaño 40w Lapiz Punta Ceramica Zurich + Soporte" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Soldador De Estaño 40w Lapiz Punta Ceramica Zurich + Soporte</span>
+          <div class="mt-prices">
+            <span class="mt-original">$8.700</span>
+            <span class="mt-price">$7.501</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA830523365" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-19.4%</span>
+          <img src="http://http2.mlstatic.com/D_821465-MLA31017769300_062019-O.jpg" alt="Licuadora Industrial Trituradora Gastronomica 8 Lts Metvisa" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Licuadora Industrial Trituradora Gastronomica 8 Lts Metvisa</span>
+          <div class="mt-prices">
+            <span class="mt-original">$844.999</span>
+            <span class="mt-price">$680.999</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA935245977" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-9.9%</span>
+          <img src="http://http2.mlstatic.com/D_755937-MLA51035766318_082022-O.jpg" alt="Kit Detector Alarma Gas Humo Monoxido 12v.  Qix" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Kit Detector Alarma Gas Humo Monoxido 12v.  Qix</span>
+          <div class="mt-prices">
+            <span class="mt-original">$69.254</span>
+            <span class="mt-price">$62.373</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1377594759" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-19.0%</span>
+          <img src="http://http2.mlstatic.com/D_871961-MLA77823098527_072024-O.jpg" alt="Mochila De Mujer Bolso Informal De Viaje Impermeable Grande" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Mochila De Mujer Bolso Informal De Viaje Impermeable Grande</span>
+          <div class="mt-prices">
+            <span class="mt-original">$29.990</span>
+            <span class="mt-price">$24.292</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1147850913" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-15.2%</span>
+          <img src="http://http2.mlstatic.com/D_830820-MLA74779450441_022024-O.jpg" alt="Head &amp;amp; Shoulders Suave Y Manejable En Tubo Depresible De 300ml Por 1 Unidad" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Head &amp;amp; Shoulders Suave Y Manejable En Tubo Depresible De 300ml Por 1 Unidad</span>
+          <div class="mt-prices">
+            <span class="mt-original">$9.200</span>
+            <span class="mt-price">$7.800</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1466020951" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-8.2%</span>
+          <img src="http://http2.mlstatic.com/D_896877-CBT81604019015_122024-O.jpg" alt="Lámpara Led De Vídeo Neewer Tl96rgb Con Batería De 2500 Mah" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Lámpara Led De Vídeo Neewer Tl96rgb Con Batería De 2500 Mah</span>
+          <div class="mt-prices">
+            <span class="mt-original">$170.601</span>
+            <span class="mt-price">$156.523</span>
+          </div>
+        </div>
+      </a>
+      <a href="https://mercadotrack.com/MLA/trackings/MLA1961405822" target="_blank" class="mt-card">
+        <div class="mt-image">
+          <span class="mt-discount">-12.1%</span>
+          <img src="http://http2.mlstatic.com/D_819192-MLA80801384205_112024-O.jpg" alt="Kit De Bolígrafo De Tatuaje Poseidon, Kit De" loading="lazy">
+        </div>
+        <div class="mt-info">
+          <span class="mt-name">Kit De Bolígrafo De Tatuaje Poseidon, Kit De</span>
+          <div class="mt-prices">
+            <span class="mt-original">$184.877</span>
+            <span class="mt-price">$162.564</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+  
+  <section class="featured-section">
+    <h2>🔍 Top 3 Ofertas - Análisis de Precio</h2>
+    <p class="featured-subtitle">Historial de precios verificado con <a href="https://mercadotrack.com" target="_blank" style="color: #3483fa;">MercadoTrack</a> para confirmar si son ofertas reales</p>
+    <div class="featured-grid">
+    <div class="featured-card">
+      <div class="featured-image">
+        <span class="discount">76% OFF</span>
+        <img src="https://http2.mlstatic.com/D_691311-MLA100868382581_122025-O.jpg" alt="Porta Tarjeta Tarjetero Cuero Unisex - Mv Cueros (469)">
+      </div>
+      <div class="featured-info">
+        <a href="https://articulo.mercadolibre.com.ar/MLA-757647454-porta-tarjeta-tarjetero-cuero-unisex-mv-cueros-469-_JM" target="_blank" class="featured-title">Porta Tarjeta Tarjetero Cuero Unisex - Mv Cueros (469)</a>
+        <div class="featured-price">$1.425</div>
+        <div class="price-history">
+          <div class="analysis-badge" style="background: #999">ID no encontrado</div>
+          <span class="no-data">Sin historial</span>
+          
+          <a href="#" target="_blank" class="mercadotrack-link">Ver historial completo →</a>
+        </div>
+      </div>
+    </div>
+    <div class="featured-card">
+      <div class="featured-image">
+        <span class="discount">73% OFF</span>
+        <img src="https://http2.mlstatic.com/D_811873-MLA99961931279_112025-O.jpg" alt="Colchón En Caja Sueño Dorado Box Plus 2 Plazas 140x190cm Esp Color Negro/blanco">
+      </div>
+      <div class="featured-info">
+        <a href="https://www.mercadolibre.com.ar/colchon-en-caja-sueno-dorado-box-plus-2-plazas-140x190cm-esp-color-negroblanco/p/MLA40374791" target="_blank" class="featured-title">Colchón En Caja Sueño Dorado Box Plus 2 Plazas 140x190cm Esp Color Negro/blanco</a>
+        <div class="featured-price">$277.487</div>
+        <div class="price-history">
+          <div class="analysis-badge" style="background: #3483fa">✅ Buen precio vs. promedio</div>
+          <svg width="200" height="50" class="sparkline">
+      <path d="M0.0,42.9 L2.9,45.0 L5.7,42.6 L8.6,44.4 L11.4,44.8 L14.3,44.4 L17.1,44.5 L20.0,41.5 L22.9,44.4 L25.7,44.7 L28.6,42.3 L31.4,42.8 L34.3,42.3 L37.1,41.5 L40.0,43.0 L42.9,44.6 L45.7,44.0 L48.6,44.9 L51.4,44.4 L54.3,42.2 L57.1,41.5 L60.0,42.2 L62.9,42.6 L65.7,43.0 L68.6,42.6 L71.4,42.4 L74.3,42.8 L77.1,42.4 L80.0,44.3 L82.9,44.6 L85.7,44.3 L88.6,44.3 L91.4,43.0 L94.3,26.3 L97.1,16.4 L100.0,42.8 L102.9,26.3 L105.7,43.0 L108.6,26.3 L111.4,40.9 L114.3,43.0 L117.1,44.4 L120.0,43.0 L122.9,40.9 L125.7,43.0 L128.6,26.3 L131.4,44.1 L134.3,26.3 L137.1,43.8 L140.0,43.0 L142.9,43.8 L145.7,44.1 L148.6,43.8 L151.4,43.4 L154.3,42.6 L157.1,43.4 L160.0,42.6 L162.9,43.5 L165.7,43.3 L168.6,31.4 L171.4,44.5 L174.3,36.2 L177.1,44.5 L180.0,31.9 L182.9,44.5 L185.7,42.5 L188.6,42.9 L191.4,5.0 L194.3,41.7 L197.1,42.0 L200.0,42.9" fill="none" stroke="#3483fa" stroke-width="2"/>
+      <circle cx="200" cy="42.9" r="3" fill="#00a650"/>
+    </svg>
+          
+          <div class="price-stats">
+            <span>Mín: $248,680</span>
+            <span>Prom: $351,831</span>
+            <span>Máx: $1,212,000</span>
+          </div>
+          <a href="https://mercadotrack.com/MLA/trackings/MLA40374791" target="_blank" class="mercadotrack-link">Ver historial completo →</a>
+        </div>
+      </div>
+    </div>
+    <div class="featured-card">
+      <div class="featured-image">
+        <span class="discount">67% OFF</span>
+        <img src="https://http2.mlstatic.com/D_817895-MLA99472661426_112025-O.jpg" alt="Horno Y Freidora De Aire Control Digital Siam 15l 1700w Doble Vidrio">
+      </div>
+      <div class="featured-info">
+        <a href="https://www.mercadolibre.com.ar/horno-y-freidora-de-aire-control-digital-siam-15l-1700w-doble-vidrio/p/MLA51967157" target="_blank" class="featured-title">Horno Y Freidora De Aire Control Digital Siam 15l 1700w Doble Vidrio</a>
+        <div class="featured-price">$86.399</div>
+        <div class="price-history">
+          <div class="analysis-badge" style="background: #999">Sin historial</div>
+          <span class="no-data">Sin historial</span>
+          
+          <a href="https://mercadotrack.com/MLA/trackings/MLA51967157" target="_blank" class="mercadotrack-link">Ver historial completo →</a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </section>
+  <h3 class="all-offers-title">Todas las ofertas</h3>
+  <p class="all-offers-subtitle">Ofertas del Día y Ofertas Relámpago extraídas de <a href="https://www.mercadolibre.com.ar/ofertas" target="_blank">mercadolibre.com.ar/ofertas</a>, ordenadas por descuento</p>
+  <div class="grid">
+    <div class="card">
+      <span class="discount">76% OFF</span>
+      <img src="https://http2.mlstatic.com/D_691311-MLA100868382581_122025-O.jpg" alt="Porta Tarjeta Tarjetero Cuero Unisex - Mv Cueros (469)" loading="lazy">
+      <span class="price">$1.425</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-757647454-porta-tarjeta-tarjetero-cuero-unisex-mv-cueros-469-_JM" target="_blank">Porta Tarjeta Tarjetero Cuero Unisex - Mv Cueros (469)</a>
+    </div>
+    <div class="card">
+      <span class="discount">73% OFF</span>
+      <img src="https://http2.mlstatic.com/D_811873-MLA99961931279_112025-O.jpg" alt="Colchón En Caja Sueño Dorado Box Plus 2 Plazas 140x190cm Esp Color Negro/blanco" loading="lazy">
+      <span class="price">$277.487</span>
+      <a href="https://www.mercadolibre.com.ar/colchon-en-caja-sueno-dorado-box-plus-2-plazas-140x190cm-esp-color-negroblanco/p/MLA40374791" target="_blank">Colchón En Caja Sueño Dorado Box Plus 2 Plazas 140x190cm Esp Color Negro/blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">67% OFF</span>
+      <img src="https://http2.mlstatic.com/D_817895-MLA99472661426_112025-O.jpg" alt="Horno Y Freidora De Aire Control Digital Siam 15l 1700w Doble Vidrio" loading="lazy">
+      <span class="price">$86.399</span>
+      <a href="https://www.mercadolibre.com.ar/horno-y-freidora-de-aire-control-digital-siam-15l-1700w-doble-vidrio/p/MLA51967157" target="_blank">Horno Y Freidora De Aire Control Digital Siam 15l 1700w Doble Vidrio</a>
+    </div>
+    <div class="card">
+      <span class="discount">67% OFF</span>
+      <img src="https://http2.mlstatic.com/D_677983-MLA97369731276_112025-O.jpg" alt="Ionizador Solar 3w Pileta Piscina Pearl Anti Cloro Sarro Y Bacterias Color Azul" loading="lazy">
+      <span class="price">$38.642</span>
+      <a href="https://www.mercadolibre.com.ar/ionizador-solar-3w-pileta-piscina-pearl-anti-cloro-sarro-y-bacterias-color-azul/p/MLA23654081" target="_blank">Ionizador Solar 3w Pileta Piscina Pearl Anti Cloro Sarro Y Bacterias Color Azul</a>
+    </div>
+    <div class="card">
+      <span class="discount">65% OFF</span>
+      <img src="https://http2.mlstatic.com/D_723659-MLA99478472520_112025-O.jpg" alt="Sommier Y Colchon 2 Plazas (140x190) Sealy Linen Somun Color Gris" loading="lazy">
+      <span class="price">$474.999</span>
+      <a href="https://www.mercadolibre.com.ar/sommier-y-colchon-2-plazas-140x190-sealy-linen-somun-color-gris/p/MLA50683752" target="_blank">Sommier Y Colchon 2 Plazas (140x190) Sealy Linen Somun Color Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">65% OFF</span>
+      <img src="https://http2.mlstatic.com/D_970940-MLA80112708621_102024-O.jpg" alt="Colchón En Caja De Espuma La Espumería Freestyle Box 1 Plaza 80cm X 190cm X 20cm Color Gris Oscuro" loading="lazy">
+      <span class="price">$182.494</span>
+      <a href="https://www.mercadolibre.com.ar/colchon-en-caja-de-espuma-la-espumeria-freestyle-box-1-plaza-80cm-x-190cm-x-20cm-color-gris-oscuro/p/MLA18642970" target="_blank">Colchón En Caja De Espuma La Espumería Freestyle Box 1 Plaza 80cm X 190cm X 20cm Color Gris Oscuro</a>
+    </div>
+    <div class="card">
+      <span class="discount">64% OFF</span>
+      <img src="https://http2.mlstatic.com/D_867868-MLA99627027513_112025-O.jpg" alt="Bombillon Acero Inoxidable No Tapa Yerba Despalada Grueso Plateado" loading="lazy">
+      <span class="price">$8.549</span>
+      <a href="https://www.mercadolibre.com.ar/bombillon-acero-inoxidable-no-tapa-yerba-despalada-grueso/up/MLAU3572402595" target="_blank">Bombillon Acero Inoxidable No Tapa Yerba Despalada Grueso Plateado</a>
+    </div>
+    <div class="card">
+      <span class="discount">62% OFF</span>
+      <img src="https://http2.mlstatic.com/D_785141-MLA95526693730_102025-O.jpg" alt="Heladera Siam Bajo Mesada Retro 50l Celeste Hsi-bm50pr2 Cycle Defrost" loading="lazy">
+      <span class="price">$149.999</span>
+      <a href="https://www.mercadolibre.com.ar/heladera-siam-bajo-mesada-retro-50l-celeste-hsi-bm50pr2-cycle-defrost/p/MLA54025027" target="_blank">Heladera Siam Bajo Mesada Retro 50l Celeste Hsi-bm50pr2 Cycle Defrost</a>
+    </div>
+    <div class="card">
+      <span class="discount">60% OFF</span>
+      <img src="https://http2.mlstatic.com/D_785625-MLA99949090493_112025-O.jpg" alt="Lavarropas Automático Carga Superior Philco 5.5 Kg 750 Rpm Gris" loading="lazy">
+      <span class="price">$307.999</span>
+      <a href="https://www.mercadolibre.com.ar/lavarropas-automatico-carga-superior-philco-55-kg-750-rpm-gris/p/MLA48342593" target="_blank">Lavarropas Automático Carga Superior Philco 5.5 Kg 750 Rpm Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">60% OFF</span>
+      <img src="https://http2.mlstatic.com/D_791603-MLA99972141179_112025-O.jpg" alt="Freidora De Aire Sansei 1700 W 6l Blanca" loading="lazy">
+      <span class="price">$49.999</span>
+      <a href="https://www.mercadolibre.com.ar/freidora-de-aire-sansei-1700-w-6l-blanca/p/MLA46157994" target="_blank">Freidora De Aire Sansei 1700 W 6l Blanca</a>
+    </div>
+    <div class="card">
+      <span class="discount">60% OFF</span>
+      <img src="https://http2.mlstatic.com/D_940123-MLA99934497619_112025-O.jpg" alt="Samsung Galaxy A26 8gb Ram + 256gb Black" loading="lazy">
+      <span class="price">$474.999</span>
+      <a href="https://www.mercadolibre.com.ar/samsung-galaxy-a26-8gb-ram-256gb-black/p/MLA50305437" target="_blank">Samsung Galaxy A26 8gb Ram + 256gb Black</a>
+    </div>
+    <div class="card">
+      <span class="discount">59% OFF</span>
+      <img src="https://http2.mlstatic.com/D_777820-MLA97892313398_112025-O.jpg" alt="Ionizador Solar Philco Pileta 114000 Lts Anti Sarro Algas Ahorro Cloro" loading="lazy">
+      <span class="price">$55.989</span>
+      <a href="https://www.mercadolibre.com.ar/ionizador-solar-philco-pileta-114000-lts-anti-sarro-algas-ahorro-cloro/p/MLA54154942" target="_blank">Ionizador Solar Philco Pileta 114000 Lts Anti Sarro Algas Ahorro Cloro</a>
+    </div>
+    <div class="card">
+      <span class="discount">56% OFF</span>
+      <img src="https://http2.mlstatic.com/D_982872-MLA89245243027_082025-O.jpg" alt="Bicicleta Niños Rodado 12 Reforzada" loading="lazy">
+      <span class="price">$65.279</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1457736621-bicicleta-ninos-rodado-12-reforzada-_JM" target="_blank">Bicicleta Niños Rodado 12 Reforzada</a>
+    </div>
+    <div class="card">
+      <span class="discount">55% OFF</span>
+      <img src="https://http2.mlstatic.com/D_693571-MLA82072007094_022025-O.jpg" alt="Esponja Limpieza Multi Superficies Super Absorvente Pack X 3" loading="lazy">
+      <span class="price">$14.787</span>
+      <a href="https://www.mercadolibre.com.ar/esponja-limpieza-multi-superficies-super-absorvente-pack-x-3/up/MLAU3004076827" target="_blank">Esponja Limpieza Multi Superficies Super Absorvente Pack X 3</a>
+    </div>
+    <div class="card">
+      <span class="discount">53% OFF</span>
+      <img src="https://http2.mlstatic.com/D_699703-MLA92613281010_092025-O.jpg" alt="Cortina Blackout Textil 2 Paños 1,40 X 2,20 Presilla Oculta" loading="lazy">
+      <span class="price">$24.742</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1485079611-cortina-blackout-textil-2-panos-140-x-220-presilla-oculta-_JM" target="_blank">Cortina Blackout Textil 2 Paños 1,40 X 2,20 Presilla Oculta</a>
+    </div>
+    <div class="card">
+      <span class="discount">53% OFF</span>
+      <img src="https://http2.mlstatic.com/D_737611-MLA74702400295_022024-O.jpg" alt="Césped Sintético Pasto Artificial De 15mm (5,00 X 2,00) 10m2" loading="lazy">
+      <span class="price">$11.009</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1411331849-cesped-sintetico-pasto-artificial-de-15mm-500-x-200-10m2-_JM" target="_blank">Césped Sintético Pasto Artificial De 15mm (5,00 X 2,00) 10m2</a>
+    </div>
+    <div class="card">
+      <span class="discount">52% OFF</span>
+      <img src="https://http2.mlstatic.com/D_892629-MLA79677332180_102024-O.jpg" alt="Sandalias Mujer Bajas Plataforma Chatitas Araquina Sumeru" loading="lazy">
+      <span class="price">$45.519</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1522267398-sandalias-mujer-bajas-plataforma-chatitas-araquina-sumeru-_JM" target="_blank">Sandalias Mujer Bajas Plataforma Chatitas Araquina Sumeru</a>
+    </div>
+    <div class="card">
+      <span class="discount">51% OFF</span>
+      <img src="https://http2.mlstatic.com/D_797793-MLA99723381283_112025-O.jpg" alt="Caja Navideña The Food Market Deli" loading="lazy">
+      <span class="price">$46.075</span>
+      <a href="https://www.mercadolibre.com.ar/caja-navidena-the-food-market-deli/up/MLAU187674072" target="_blank">Caja Navideña The Food Market Deli</a>
+    </div>
+    <div class="card">
+      <span class="discount">51% OFF</span>
+      <img src="https://http2.mlstatic.com/D_770106-MLA96557556146_112025-O.jpg" alt="Remera Morley Rayada Elastizada Premium Mujer Megaclothes" loading="lazy">
+      <span class="price">$12.201</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2528620014-remera-morley-rayada-elastizada-premium-mujer-megaclothes-_JM" target="_blank">Remera Morley Rayada Elastizada Premium Mujer Megaclothes</a>
+    </div>
+    <div class="card">
+      <span class="discount">50% OFF</span>
+      <img src="https://http2.mlstatic.com/D_870051-MLA99466436884_112025-O.jpg" alt="Ventilador De Techo Retráctil Etheos 100w Luz Led Control" loading="lazy">
+      <span class="price">$124.599</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-de-techo-retractil-etheos-100w-luz-led-control/p/MLA44033885" target="_blank">Ventilador De Techo Retráctil Etheos 100w Luz Led Control</a>
+    </div>
+    <div class="card">
+      <span class="discount">50% OFF</span>
+      <img src="https://http2.mlstatic.com/D_995347-MLA93905116611_102025-O.jpg" alt="Boxer Uomo Hombre - Calzoncillos Para Hombre - Pack X 3" loading="lazy">
+      <span class="price">$9.336</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2099338564-boxer-uomo-hombre-calzoncillos-para-hombre-pack-x-3-_JM" target="_blank">Boxer Uomo Hombre - Calzoncillos Para Hombre - Pack X 3</a>
+    </div>
+    <div class="card">
+      <span class="discount">50% OFF</span>
+      <img src="https://http2.mlstatic.com/D_925555-MLA99309564792_112025-O.jpg" alt="Mermelada De Frutos Rojos Sabor Pampeano Dulce 215 Gramos En Frasco Sin Azúcar Agregada Bajas Calorías" loading="lazy">
+      <span class="price">$6.553</span>
+      <a href="https://www.mercadolibre.com.ar/mermelada-de-frutos-rojos-sabor-pampeano-dulce-215-gramos-en-frasco-sin-azucar-agregada-bajas-calorias/p/MLA43974477" target="_blank">Mermelada De Frutos Rojos Sabor Pampeano Dulce 215 Gramos En Frasco Sin Azúcar Agregada Bajas Calorías</a>
+    </div>
+    <div class="card">
+      <span class="discount">49% OFF</span>
+      <img src="https://http2.mlstatic.com/D_669966-CBT83732909745_042025-O.jpg" alt="Muñeca Bebé Reborn 49cm Cuerpo De Silicona+algodón" loading="lazy">
+      <span class="price">$83.925</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2064090296-muneca-bebe-reborn-49cm-cuerpo-de-siliconaalgodon-_JM" target="_blank">Muñeca Bebé Reborn 49cm Cuerpo De Silicona+algodón</a>
+    </div>
+    <div class="card">
+      <span class="discount">49% OFF</span>
+      <img src="https://http2.mlstatic.com/D_737377-MLA89430829363_082025-O.jpg" alt="Ventilador 3 En 1 Metalica Turbo Pared 5 Paletas 18 Pulgadas" loading="lazy">
+      <span class="price">$50.999</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1474172621-ventilador-3-en-1-metalica-turbo-pared-5-paletas-18-pulgadas-_JM" target="_blank">Ventilador 3 En 1 Metalica Turbo Pared 5 Paletas 18 Pulgadas</a>
+    </div>
+    <div class="card">
+      <span class="discount">49% OFF</span>
+      <img src="https://http2.mlstatic.com/D_782074-MLA99971086193_112025-O.jpg" alt="Climatizador Portátil Frío Alpaca Alp-cl6l Blanco 6l" loading="lazy">
+      <span class="price">$122.374</span>
+      <a href="https://www.mercadolibre.com.ar/climatizador-portatil-frio-alpaca-alp-cl6l-blanco-6l/p/MLA44160596" target="_blank">Climatizador Portátil Frío Alpaca Alp-cl6l Blanco 6l</a>
+    </div>
+    <div class="card">
+      <span class="discount">49% OFF</span>
+      <img src="https://http2.mlstatic.com/D_926721-MLA99990562767_112025-O.jpg" alt="Celular Zte Blade A75 5g Diamond Black" loading="lazy">
+      <span class="price">$162.999</span>
+      <a href="https://www.mercadolibre.com.ar/celular-zte-blade-a75-5g-diamond-black/p/MLA41012307" target="_blank">Celular Zte Blade A75 5g Diamond Black</a>
+    </div>
+    <div class="card">
+      <span class="discount">49% OFF</span>
+      <img src="https://http2.mlstatic.com/D_761852-MLA100001156811_112025-O.jpg" alt="Notebook Lenovo Ideapad 1 15ijl7 Intel Celeron N4500 12 Gb Ddr4-sdram 128 Gb Emmc 39.6 Cm (15.6 ) 1366x768px Wi-fi 5 (802.11ac) Teclado Español Windows 11 Home Color Abyss Blue" loading="lazy">
+      <span class="price">$480.199</span>
+      <a href="https://www.mercadolibre.com.ar/notebook-lenovo-ideapad-1-15ijl7-intel-celeron-n4500-12-gb-ddr4-sdram-128-gb-emmc-396-cm-156-1366x768px-wi-fi-5-80211ac-teclado-espanol-windows-11-home-color-abyss-blue/p/MLA41391097" target="_blank">Notebook Lenovo Ideapad 1 15ijl7 Intel Celeron N4500 12 Gb Ddr4-sdram 128 Gb Emmc 39.6 Cm (15.6 ) 1366x768px Wi-fi 5 (802.11ac) Teclado Español Windows 11 Home Color Abyss Blue</a>
+    </div>
+    <div class="card">
+      <span class="discount">48% OFF</span>
+      <img src="https://http2.mlstatic.com/D_867787-MLA96155977727_102025-O.jpg" alt="Bomba Elevadora Centrifuga De Agua Qc100 Vasser Motorarg 1 Hp" loading="lazy">
+      <span class="price">$102.893</span>
+      <a href="https://www.mercadolibre.com.ar/bomba-elevadora-centrifuga-de-agua-qc100-vasser-motorarg-1-hp/p/MLA19569420" target="_blank">Bomba Elevadora Centrifuga De Agua Qc100 Vasser Motorarg 1 Hp</a>
+    </div>
+    <div class="card">
+      <span class="discount">46% OFF</span>
+      <img src="https://http2.mlstatic.com/D_961936-MLA96426979318_102025-O.jpg" alt="Ventilador 3 En 1 Star Vision 0810 Con 5 Palas De Metal Color Plateado Estructura Color Plateado, 45.72cm De Diámetro 90 Hz" loading="lazy">
+      <span class="price">$53.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-3-en-1-star-vision-0810-con-5-palas-de-metal-color-plateado-estructura-color-plateado-4572cm-de-diametro-90-hz/p/MLA28619951" target="_blank">Ventilador 3 En 1 Star Vision 0810 Con 5 Palas De Metal Color Plateado Estructura Color Plateado, 45.72cm De Diámetro 90 Hz</a>
+    </div>
+    <div class="card">
+      <span class="discount">46% OFF</span>
+      <img src="https://http2.mlstatic.com/D_719712-MLA100124742169_122025-O.jpg" alt="Cera Auto Polish,pule Y Encera Lustra Brillo Intenso Revigal" loading="lazy">
+      <span class="price">$15.503</span>
+      <a href="https://www.mercadolibre.com.ar/cera-auto-polishpule-y-encera-lustra-brillo-intenso-revigal/p/MLA36905275" target="_blank">Cera Auto Polish,pule Y Encera Lustra Brillo Intenso Revigal</a>
+    </div>
+    <div class="card">
+      <span class="discount">46% OFF</span>
+      <img src="https://http2.mlstatic.com/D_835271-MLA100454471462_122025-O.jpg" alt="Bombillon Acero Inoxidable Pico Loro Grueso No Tapa Yerba Plateado" loading="lazy">
+      <span class="price">$8.455</span>
+      <a href="https://www.mercadolibre.com.ar/bombillon-acero-inoxidable-pico-loro-grueso-no-tapa-yerba/up/MLAU3655179957" target="_blank">Bombillon Acero Inoxidable Pico Loro Grueso No Tapa Yerba Plateado</a>
+    </div>
+    <div class="card">
+      <span class="discount">46% OFF</span>
+      <img src="https://http2.mlstatic.com/D_681791-MLA51500511882_092022-O.jpg" alt="Tubo Extensor 32mm Metal Aspiradora Moulinex Tophouse " loading="lazy">
+      <span class="price">$48.599</span>
+      <a href="https://www.mercadolibre.com.ar/tubo-extensor-32mm-metal-aspiradora-moulinex-tophouse/up/MLAU228451806" target="_blank">Tubo Extensor 32mm Metal Aspiradora Moulinex Tophouse </a>
+    </div>
+    <div class="card">
+      <span class="discount">45% OFF</span>
+      <img src="https://http2.mlstatic.com/D_898191-MLA99700995282_122025-O.jpg" alt="Ventilador De Techo Codini V5rb Blanco Luz Led Control Remoto" loading="lazy">
+      <span class="price">$102.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-de-techo-codini-v5rb-blanco-luz-led-control-remoto/p/MLA19134758" target="_blank">Ventilador De Techo Codini V5rb Blanco Luz Led Control Remoto</a>
+    </div>
+    <div class="card">
+      <span class="discount">45% OFF</span>
+      <img src="https://http2.mlstatic.com/D_713843-MLA96080445695_102025-O.jpg" alt="Aire Acondicionado Split Frio/calor Philco Phs50hs4c 4472f 5200w" loading="lazy">
+      <span class="price">$899.999</span>
+      <a href="https://www.mercadolibre.com.ar/aire-acondicionado-split-friocalor-philco-phs50hs4c-4472f-5200w/p/MLA17007295" target="_blank">Aire Acondicionado Split Frio/calor Philco Phs50hs4c 4472f 5200w</a>
+    </div>
+    <div class="card">
+      <span class="discount">45% OFF</span>
+      <img src="https://http2.mlstatic.com/D_697138-MLA89123517105_082025-O.jpg" alt="Cámara De Fotos Portátil Video Hd Flash Impresión Infantil" loading="lazy">
+      <span class="price">$54.999</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1881744042-camara-de-fotos-portatil-video-hd-flash-impresion-infantil-_JM" target="_blank">Cámara De Fotos Portátil Video Hd Flash Impresión Infantil</a>
+    </div>
+    <div class="card">
+      <span class="discount">45% OFF</span>
+      <img src="https://http2.mlstatic.com/D_672318-MLA92441327620_092025-O.jpg" alt="Funda Tablet iPad A16 11 Pulgadas 2025 10 Generación 2022 Negro" loading="lazy">
+      <span class="price">$35.197</span>
+      <a href="https://www.mercadolibre.com.ar/funda-tablet-ipad-a16-11-pulgadas-2025-10-generacion-2022/up/MLAU3250833104" target="_blank">Funda Tablet iPad A16 11 Pulgadas 2025 10 Generación 2022 Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_788179-MLA99937322231_112025-O.jpg" alt="Camara Seguridad Geotek Ip Wifi Domo Doble Lente 6mp Exterior Vision Nocturna Deteccion Movimiento Color Blanco" loading="lazy">
+      <span class="price">$55.499</span>
+      <a href="https://www.mercadolibre.com.ar/camara-seguridad-geotek-ip-wifi-domo-doble-lente-6mp-exterior-vision-nocturna-deteccion-movimiento-color-blanco/p/MLA43877246" target="_blank">Camara Seguridad Geotek Ip Wifi Domo Doble Lente 6mp Exterior Vision Nocturna Deteccion Movimiento Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_977876-MLA99477625812_112025-O.jpg" alt="All-in-one Hp 23.8 Pulgadas 24-cr0336la Intel Core I3 8gb Ram 512gb Windows 11 Home" loading="lazy">
+      <span class="price">$940.899</span>
+      <a href="https://www.mercadolibre.com.ar/all-in-one-hp-238-pulgadas-24-cr0336la-intel-core-i3-8gb-ram-512gb-windows-11-home/p/MLA54229463" target="_blank">All-in-one Hp 23.8 Pulgadas 24-cr0336la Intel Core I3 8gb Ram 512gb Windows 11 Home</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_635913-MLA99913831659_112025-O.jpg" alt="Cortina Roller Doble Blackout + Sunscreen 6% Blanco 170x160 Cm Roller Pro | Fácil Instalación | Tela Pvc Resistente | Aislante Térmico Y Acústico | Soportes Metálicos | 170 Ancho X 160 Alto" loading="lazy">
+      <span class="price">$189.121</span>
+      <a href="https://www.mercadolibre.com.ar/cortina-roller-doble-blackout-sunscreen-6-blanco-170x160-cm-roller-pro-facil-instalacion-tela-pvc-resistente-aislante-termico-y-acustico-soportes-metalicos-170-ancho-x-160-alto/p/MLA41977763" target="_blank">Cortina Roller Doble Blackout + Sunscreen 6% Blanco 170x160 Cm Roller Pro | Fácil Instalación | Tela Pvc Resistente | Aislante Térmico Y Acústico | Soportes Metálicos | 170 Ancho X 160 Alto</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_778019-MLA99538849090_122025-O.jpg" alt="Hidrolavadora Electrica Trent 2000w Alta Presion 2175 Psi Amarillo Y Negro Hlt407-2000-ac220v" loading="lazy">
+      <span class="price">$167.755</span>
+      <a href="https://www.mercadolibre.com.ar/hidrolavadora-electrica-trent-2000w-alta-presion-2175-psi-amarillo-y-negro-hlt407-2000-ac220v/p/MLA36781598" target="_blank">Hidrolavadora Electrica Trent 2000w Alta Presion 2175 Psi Amarillo Y Negro Hlt407-2000-ac220v</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_888341-MLA99926920335_112025-O.jpg" alt="Monopatín Disney Frozen + Kit Casco Rodilleras Coderas Color Violeta" loading="lazy">
+      <span class="price">$44.000</span>
+      <a href="https://www.mercadolibre.com.ar/monopatin-disney-frozen-kit-casco-rodilleras-coderas-color-violeta/p/MLA43459511" target="_blank">Monopatín Disney Frozen + Kit Casco Rodilleras Coderas Color Violeta</a>
+    </div>
+    <div class="card">
+      <span class="discount">44% OFF</span>
+      <img src="https://http2.mlstatic.com/D_733449-MLA93634440360_102025-O.jpg" alt="Fundas Elastizadas Sillas 100%poliester Pack X6 Calidad Prem" loading="lazy">
+      <span class="price">$26.790</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1617143682-fundas-elastizadas-sillas-100poliester-pack-x6-calidad-prem-_JM" target="_blank">Fundas Elastizadas Sillas 100%poliester Pack X6 Calidad Prem</a>
+    </div>
+    <div class="card">
+      <span class="discount">43% OFF</span>
+      <img src="https://http2.mlstatic.com/D_658256-MLA90875528557_082025-O.jpg" alt="Celular Samsung Galaxy A06 4g 128/4gb Ram + Accesorio Regalo" loading="lazy">
+      <span class="price">$187.999</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1962665364-celular-samsung-galaxy-a06-4g-1284gb-ram-accesorio-regalo-_JM" target="_blank">Celular Samsung Galaxy A06 4g 128/4gb Ram + Accesorio Regalo</a>
+    </div>
+    <div class="card">
+      <span class="discount">43% OFF</span>
+      <img src="https://http2.mlstatic.com/D_817422-MLA97102165743_112025-O.jpg" alt="Mochila Conservadora Termica Reforzada Alimentos Bebidas" loading="lazy">
+      <span class="price">$26.076</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2300750372-mochila-conservadora-termica-reforzada-alimentos-bebidas-_JM" target="_blank">Mochila Conservadora Termica Reforzada Alimentos Bebidas</a>
+    </div>
+    <div class="card">
+      <span class="discount">42% OFF</span>
+      <img src="https://http2.mlstatic.com/D_708831-MLA84540916722_052025-O.jpg" alt="Perfume Kaiak Océano Masculino Edt 100 Ml Natura" loading="lazy">
+      <span class="price">$33.922</span>
+      <a href="https://www.mercadolibre.com.ar/perfume-kaiak-oceano-masculino-edt-100-ml-natura/p/MLA18554338" target="_blank">Perfume Kaiak Océano Masculino Edt 100 Ml Natura</a>
+    </div>
+    <div class="card">
+      <span class="discount">42% OFF</span>
+      <img src="https://http2.mlstatic.com/D_784828-MLA99845635135_112025-O.jpg" alt="Protector Solar Dermaglos F50" loading="lazy">
+      <span class="price">$21.042</span>
+      <a href="https://www.mercadolibre.com.ar/protector-solar-dermaglos-f50/p/MLA16251923" target="_blank">Protector Solar Dermaglos F50</a>
+    </div>
+    <div class="card">
+      <span class="discount">42% OFF</span>
+      <img src="https://http2.mlstatic.com/D_732691-MLA100068608409_122025-O.jpg" alt="Ventilador Liliana Vp20k 3 En 1 De Pie / Turbo / Pared 20 3 Aspas Metálicas" loading="lazy">
+      <span class="price">$87.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-liliana-vp20k-3-en-1-de-pie-turbo-pared-20-3-aspas-metalicas/p/MLA41701462" target="_blank">Ventilador Liliana Vp20k 3 En 1 De Pie / Turbo / Pared 20 3 Aspas Metálicas</a>
+    </div>
+    <div class="card">
+      <span class="discount">42% OFF</span>
+      <img src="https://http2.mlstatic.com/D_935846-MLA73196138779_122023-O.jpg" alt="2 Almohadas Inteligente Sleeptime 68x40x13 - Premium Hotel  Funda De Toalla Blanca" loading="lazy">
+      <span class="price">$46.958</span>
+      <a href="https://www.mercadolibre.com.ar/2-almohadas-inteligente-sleeptime-68x40x13--premium-hotel/up/MLAU209331126" target="_blank">2 Almohadas Inteligente Sleeptime 68x40x13 - Premium Hotel  Funda De Toalla Blanca</a>
+    </div>
+    <div class="card">
+      <span class="discount">41% OFF</span>
+      <img src="https://http2.mlstatic.com/D_619379-MLA99513558664_112025-O.jpg" alt="Valija Cabina Samsonite Fiero 3.0 Carry On" loading="lazy">
+      <span class="price">$188.210</span>
+      <a href="https://www.mercadolibre.com.ar/valija-cabina-samsonite-fiero-30-carry-on/p/MLA49997841" target="_blank">Valija Cabina Samsonite Fiero 3.0 Carry On</a>
+    </div>
+    <div class="card">
+      <span class="discount">41% OFF</span>
+      <img src="https://http2.mlstatic.com/D_997739-MLA99483241422_112025-O.jpg" alt="Hidrolavadora Electrica Trent Hlt203 1200w Alta Presion 1600 Psi 110 Bar Con Accesorios" loading="lazy">
+      <span class="price">$87.875</span>
+      <a href="https://www.mercadolibre.com.ar/hidrolavadora-electrica-trent-hlt203-1200w-alta-presion-1600-psi-110-bar-con-accesorios/p/MLA53151118" target="_blank">Hidrolavadora Electrica Trent Hlt203 1200w Alta Presion 1600 Psi 110 Bar Con Accesorios</a>
+    </div>
+    <div class="card">
+      <span class="discount">41% OFF</span>
+      <img src="https://http2.mlstatic.com/D_907331-MLA99778933916_122025-O.jpg" alt="Short Pollera Jean Minifalda Tiro Alto Mujer Dama Tendencia" loading="lazy">
+      <span class="price">$28.861</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1572083823-short-pollera-jean-minifalda-tiro-alto-mujer-dama-tendencia-_JM" target="_blank">Short Pollera Jean Minifalda Tiro Alto Mujer Dama Tendencia</a>
+    </div>
+    <div class="card">
+      <span class="discount">40% OFF</span>
+      <img src="https://http2.mlstatic.com/D_908747-MLA100009135171_122025-O.jpg" alt="Kit 2 Camaras Seguridad Geotek Ip 6mp Wifi Domo Doble Lente Exterior Vision Nocturna Deteccion Movimiento" loading="lazy">
+      <span class="price">$118.499</span>
+      <a href="https://www.mercadolibre.com.ar/kit-2-camaras-seguridad-geotek-ip-6mp-wifi-domo-doble-lente-exterior-vision-nocturna-deteccion-movimiento/p/MLA49864238" target="_blank">Kit 2 Camaras Seguridad Geotek Ip 6mp Wifi Domo Doble Lente Exterior Vision Nocturna Deteccion Movimiento</a>
+    </div>
+    <div class="card">
+      <span class="discount">40% OFF</span>
+      <img src="https://http2.mlstatic.com/D_824474-MLA70542596069_072023-O.jpg" alt="Desmalezadora Motoguadaña 52cc Naftera + Arnes Oferta" loading="lazy">
+      <span class="price">$124.756</span>
+      <a href="https://www.mercadolibre.com.ar/desmalezadora-motoguadana-52cc-naftera--arnes-oferta/up/MLAU133086020" target="_blank">Desmalezadora Motoguadaña 52cc Naftera + Arnes Oferta</a>
+    </div>
+    <div class="card">
+      <span class="discount">40% OFF</span>
+      <img src="https://http2.mlstatic.com/D_667304-MLA97119870043_112025-O.jpg" alt="Silla Comedor X 2unid Natural Almendra Henn Malu Sec24-510 Rayado Marrón Claro Marrón Claro" loading="lazy">
+      <span class="price">$155.142</span>
+      <a href="https://www.mercadolibre.com.ar/silla-comedor-x-2unid-natural-almendra-henn-malu-sec24510/up/MLAU3490918718" target="_blank">Silla Comedor X 2unid Natural Almendra Henn Malu Sec24-510 Rayado Marrón Claro Marrón Claro</a>
+    </div>
+    <div class="card">
+      <span class="discount">40% OFF</span>
+      <img src="https://http2.mlstatic.com/D_655121-MLA99505812408_112025-O.jpg" alt="Hidrolavadora Electrica Trent Hlt307 1400w Alta Presion 1600 Psi 110 Bar Con Accesorios" loading="lazy">
+      <span class="price">$100.700</span>
+      <a href="https://www.mercadolibre.com.ar/hidrolavadora-electrica-trent-hlt307-1400w-alta-presion-1600-psi-110-bar-con-accesorios/p/MLA26994482" target="_blank">Hidrolavadora Electrica Trent Hlt307 1400w Alta Presion 1600 Psi 110 Bar Con Accesorios</a>
+    </div>
+    <div class="card">
+      <span class="discount">39% OFF</span>
+      <img src="https://http2.mlstatic.com/D_658591-MLA99959026331_112025-O.jpg" alt="Parlante Jbl Flip 6 Portatil Bluetooth Color Negro Importado" loading="lazy">
+      <span class="price">$168.445</span>
+      <a href="https://www.mercadolibre.com.ar/parlante-jbl-flip-6-portatil-bluetooth-color-negro-importado/p/MLA29564729" target="_blank">Parlante Jbl Flip 6 Portatil Bluetooth Color Negro Importado</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_858961-MLA101200979987_122025-O.jpg" alt="Camicleta Bicicleta Equilibrio Sin Pedales Rodado 12" loading="lazy">
+      <span class="price">$36.332</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2589798636-camicleta-bicicleta-equilibrio-sin-pedales-rodado-12-_JM" target="_blank">Camicleta Bicicleta Equilibrio Sin Pedales Rodado 12</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_852343-MLA97323814573_112025-O.jpg" alt="Robot Barrefondo Nataclor Niya Tracker 15" loading="lazy">
+      <span class="price">$324.849</span>
+      <a href="https://www.mercadolibre.com.ar/robot-barrefondo-nataclor-niya-tracker-15/p/MLA61700101" target="_blank">Robot Barrefondo Nataclor Niya Tracker 15</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_852482-MLA99523450368_122025-O.jpg" alt="Aire Acondicionado Sansei Split Frio/calor 2365 Frigorías Blanco Sas25ha4cn" loading="lazy">
+      <span class="price">$569.999</span>
+      <a href="https://www.mercadolibre.com.ar/aire-acondicionado-sansei-split-friocalor-2365-frigorias-blanco-sas25ha4cn/p/MLA54142126" target="_blank">Aire Acondicionado Sansei Split Frio/calor 2365 Frigorías Blanco Sas25ha4cn</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_860816-MLA99868596757_112025-O.jpg" alt="Roku Express 3960 Hd | Convertir Tu Tv En Smart | Tv Box | Chromecast | Apple Tv | Aparato Para Transformar El Tv Para Ver Netflix Y Youtube | Amazon Tv Stick." loading="lazy">
+      <span class="price">$48.999</span>
+      <a href="https://www.mercadolibre.com.ar/roku-express-3960-hd-convertir-tu-tv-en-smart-tv-box-chromecast-apple-tv-aparato-para-transformar-el-tv-para-ver-netflix-y-youtube-amazon-tv-stick/p/MLA21087858" target="_blank">Roku Express 3960 Hd | Convertir Tu Tv En Smart | Tv Box | Chromecast | Apple Tv | Aparato Para Transformar El Tv Para Ver Netflix Y Youtube | Amazon Tv Stick.</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_790809-MLA99522150280_122025-O.jpg" alt="Ventilador De Pie 18 Codini V18v Blanco Cantidad De Aspas 5 Material De Las Aspas Plasticas" loading="lazy">
+      <span class="price">$54.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-de-pie-18-codini-v18v-blanco-cantidad-de-aspas-5-material-de-las-aspas-plasticas/p/MLA20006956" target="_blank">Ventilador De Pie 18 Codini V18v Blanco Cantidad De Aspas 5 Material De Las Aspas Plasticas</a>
+    </div>
+    <div class="card">
+      <span class="discount">38% OFF</span>
+      <img src="https://http2.mlstatic.com/D_689041-MLA91251990551_082025-O.jpg" alt="Compresor De Aire Mini Portátil Auto Moto Bici Alpina Oficia Monofásica" loading="lazy">
+      <span class="price">$14.002</span>
+      <a href="https://www.mercadolibre.com.ar/compresor-de-aire-mini-portatil-auto-moto-bici-alpina-oficia/up/MLAU451211569" target="_blank">Compresor De Aire Mini Portátil Auto Moto Bici Alpina Oficia Monofásica</a>
+    </div>
+    <div class="card">
+      <span class="discount">37% OFF</span>
+      <img src="https://http2.mlstatic.com/D_789128-MLA99478696338_112025-O.jpg" alt="Motorola E15 64 Gb 2gb Ram Azul Cantera" loading="lazy">
+      <span class="price">$124.999</span>
+      <a href="https://www.mercadolibre.com.ar/motorola-e15-64-gb-2gb-ram-azul-cantera/p/MLA47223770" target="_blank">Motorola E15 64 Gb 2gb Ram Azul Cantera</a>
+    </div>
+    <div class="card">
+      <span class="discount">37% OFF</span>
+      <img src="https://http2.mlstatic.com/D_871568-MLA98828361122_112025-O.jpg" alt="Cama Elástica Bounce Ce08ft 2.44m Circular Uv Lona De Salto Negro Cobertor De Resortes Negro" loading="lazy">
+      <span class="price">$269.990</span>
+      <a href="https://www.mercadolibre.com.ar/cama-elastica-bounce-ce08ft-244m-circular-uv-lona-de-salto-negro-cobertor-de-resortes-negro/p/MLA62491678" target="_blank">Cama Elástica Bounce Ce08ft 2.44m Circular Uv Lona De Salto Negro Cobertor De Resortes Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">37% OFF</span>
+      <img src="https://http2.mlstatic.com/D_779008-MLA99952896685_112025-O.jpg" alt="Freidora Electrica Comercial 2500w Aceite 10 L Daewoo Didf 220 V Didf-81eh" loading="lazy">
+      <span class="price">$93.040</span>
+      <a href="https://www.mercadolibre.com.ar/freidora-electrica-comercial-2500w-aceite-10-l-daewoo-didf-220-v-didf-81eh/p/MLA21347289" target="_blank">Freidora Electrica Comercial 2500w Aceite 10 L Daewoo Didf 220 V Didf-81eh</a>
+    </div>
+    <div class="card">
+      <span class="discount">37% OFF</span>
+      <img src="https://http2.mlstatic.com/D_709677-MLA95709043734_102025-O.jpg" alt="Estanteria Plegable 5 Niveles Movil Metal Ruedas Hogar Cocina Color Negro Smart Tech" loading="lazy">
+      <span class="price">$86.849</span>
+      <a href="https://www.mercadolibre.com.ar/estanteria-plegable-5-niveles-movil-metal-ruedas-hogar-cocina-color-negro-smart-tech/p/MLA47449797" target="_blank">Estanteria Plegable 5 Niveles Movil Metal Ruedas Hogar Cocina Color Negro Smart Tech</a>
+    </div>
+    <div class="card">
+      <span class="discount">36% OFF</span>
+      <img src="https://http2.mlstatic.com/D_610417-MLA99552380082_122025-O.jpg" alt="Juego Catan Devir Español Juego De Estrategia" loading="lazy">
+      <span class="price">$79.990</span>
+      <a href="https://www.mercadolibre.com.ar/juego-catan-devir-espanol-juego-de-estrategia/p/MLA9013066" target="_blank">Juego Catan Devir Español Juego De Estrategia</a>
+    </div>
+    <div class="card">
+      <span class="discount">36% OFF</span>
+      <img src="https://http2.mlstatic.com/D_724703-MLA99586869026_122025-O.jpg" alt="Ventilador De Techo Color Blanco 4 Aspas Retractil Home World" loading="lazy">
+      <span class="price">$123.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-de-techo-color-blanco-4-aspas-retractil-home-world/p/MLA45114744" target="_blank">Ventilador De Techo Color Blanco 4 Aspas Retractil Home World</a>
+    </div>
+    <div class="card">
+      <span class="discount">36% OFF</span>
+      <img src="https://http2.mlstatic.com/D_851576-MLA95367996034_102025-O.jpg" alt="Celular Zte Blade A55 128gb+funda Cargador Y Auris De Regalo Negro" loading="lazy">
+      <span class="price">$144.999</span>
+      <a href="https://www.mercadolibre.com.ar/celular-zte-blade-a55-128gbfunda-cargador-y-auris-de-regalo/up/MLAU3508584962" target="_blank">Celular Zte Blade A55 128gb+funda Cargador Y Auris De Regalo Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">36% OFF</span>
+      <img src="https://http2.mlstatic.com/D_877715-MLA96600651031_102025-O.jpg" alt="Remera Clásica Manga Corta De Algodón Mujer Talles Grandes" loading="lazy">
+      <span class="price">$11.412</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1100070598-remera-clasica-manga-corta-de-algodon-mujer-talles-grandes-_JM" target="_blank">Remera Clásica Manga Corta De Algodón Mujer Talles Grandes</a>
+    </div>
+    <div class="card">
+      <span class="discount">35% OFF</span>
+      <img src="https://http2.mlstatic.com/D_986232-MLA99594647312_122025-O.jpg" alt="Aire Acondicionado Split Frío Calor Philco 2200fg / 2560w Phbks26ha6a Negro" loading="lazy">
+      <span class="price">$649.999</span>
+      <a href="https://www.mercadolibre.com.ar/aire-acondicionado-split-frio-calor-philco-2200fg-2560w-phbks26ha6a-negro/p/MLA34448498" target="_blank">Aire Acondicionado Split Frío Calor Philco 2200fg / 2560w Phbks26ha6a Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">35% OFF</span>
+      <img src="https://http2.mlstatic.com/D_633320-MLA89295658702_082025-O.jpg" alt="Bicicleta Alpina 2.0 Pro Acero Mtb R29 Shimano 21v C/susp" loading="lazy">
+      <span class="price">$307.263</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1487144675-bicicleta-alpina-20-pro-acero-mtb-r29-shimano-21v-csusp-_JM" target="_blank">Bicicleta Alpina 2.0 Pro Acero Mtb R29 Shimano 21v C/susp</a>
+    </div>
+    <div class="card">
+      <span class="discount">35% OFF</span>
+      <img src="https://http2.mlstatic.com/D_869412-MLA90132475673_082025-O.jpg" alt="Celular Motorola Moto E15 64gb 2gb Ram + Accesorio De Regalo" loading="lazy">
+      <span class="price">$142.999</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1480368321-celular-motorola-moto-e15-64gb-2gb-ram-accesorio-de-regalo-_JM" target="_blank">Celular Motorola Moto E15 64gb 2gb Ram + Accesorio De Regalo</a>
+    </div>
+    <div class="card">
+      <span class="discount">35% OFF</span>
+      <img src="https://http2.mlstatic.com/D_812323-MLA92545991028_092025-O.jpg" alt="Repasadores Toalla Cocina Fantasía Algodón 40x60 Cm Pack X6" loading="lazy">
+      <span class="price">$19.265</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2137343660-repasadores-toalla-cocina-fantasia-algodon-40x60-cm-pack-x6-_JM" target="_blank">Repasadores Toalla Cocina Fantasía Algodón 40x60 Cm Pack X6</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_906680-MLA96134701173_102025-O.jpg" alt="Silla De Jardin Plastica Apilable Resistente X10 Gardenlife Color Negro" loading="lazy">
+      <span class="price">$176.899</span>
+      <a href="https://click1.mercadolibre.com.ar/mclics/clicks/external/MLA/count" target="_blank">Silla De Jardin Plastica Apilable Resistente X10 Gardenlife Color Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_906680-MLA96134701173_102025-O.jpg" alt="Silla De Jardin Plastica Apilable Resistente X10 Gardenlife Color Negro" loading="lazy">
+      <span class="price">$176.899</span>
+      <a href="https://www.mercadolibre.com.ar/silla-de-jardin-plastica-apilable-resistente-x10-gardenlife-color-negro/p/MLA36373355" target="_blank">Silla De Jardin Plastica Apilable Resistente X10 Gardenlife Color Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_721455-MLA99997197021_112025-O.jpg" alt="Ventilador Peabody Pe-vp150 20  130w 3 Paletas De Metal" loading="lazy">
+      <span class="price">$98.998</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-peabody-pe-vp150-20-130w-3-paletas-de-metal/p/MLA13547645" target="_blank">Ventilador Peabody Pe-vp150 20  130w 3 Paletas De Metal</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_779302-MLA90422355972_082025-O.jpg" alt="Bicicleta Venzo Loki Shadow R29 21 Vel Shimano Disc Mecanico" loading="lazy">
+      <span class="price">$541.200</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2010250496-bicicleta-venzo-loki-shadow-r29-21-vel-shimano-disc-mecanico-_JM" target="_blank">Bicicleta Venzo Loki Shadow R29 21 Vel Shimano Disc Mecanico</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_884173-MLA99976836259_112025-O.jpg" alt="Banco De Pecho Pesas Plano Regulable Plegable + Paralelas Energy Fit" loading="lazy">
+      <span class="price">$238.800</span>
+      <a href="https://www.mercadolibre.com.ar/banco-de-pecho-pesas-plano-regulable-plegable-paralelas-energy-fit/p/MLA29338652" target="_blank">Banco De Pecho Pesas Plano Regulable Plegable + Paralelas Energy Fit</a>
+    </div>
+    <div class="card">
+      <span class="discount">34% OFF</span>
+      <img src="https://http2.mlstatic.com/D_867356-MLA96222115774_102025-O.jpg" alt="Filtro Humo Grasa Purificador Extractor Spar Y Otras Marcas" loading="lazy">
+      <span class="price">$21.779</span>
+      <a href="https://www.mercadolibre.com.ar/filtro-humo-grasa-purificador-extractor-spar-y-otras-marcas/up/MLAU276782678" target="_blank">Filtro Humo Grasa Purificador Extractor Spar Y Otras Marcas</a>
+    </div>
+    <div class="card">
+      <span class="discount">33% OFF</span>
+      <img src="https://http2.mlstatic.com/D_932926-MLA95937340831_102025-O.jpg" alt="Mixer Batidora De Mano Minipimer 1000w Vaso Batidor Daewoo Negro" loading="lazy">
+      <span class="price">$60.192</span>
+      <a href="https://www.mercadolibre.com.ar/mixer-batidora-de-mano-minipimer-1000w-vaso-batidor-daewoo/up/MLAU3504512469" target="_blank">Mixer Batidora De Mano Minipimer 1000w Vaso Batidor Daewoo Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">33% OFF</span>
+      <img src="https://http2.mlstatic.com/D_904222-MLA86517282070_062025-O.jpg" alt="Cortinas Black Out Blackout Textil Tricapa Incluye 2 Paños De 145x210cm Calidad Premium " loading="lazy">
+      <span class="price">$33.299</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-738277766-cortinas-black-out-blackout-textil-tricapa-incluye-2-panos-de-145x210cm-calidad-premium-_JM" target="_blank">Cortinas Black Out Blackout Textil Tricapa Incluye 2 Paños De 145x210cm Calidad Premium </a>
+    </div>
+    <div class="card">
+      <span class="discount">33% OFF</span>
+      <img src="https://http2.mlstatic.com/D_703562-MLA82295253962_022025-O.jpg" alt="Botas Con Hebillas Brusellas" loading="lazy">
+      <span class="price">$53.390</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1983277130-botas-con-hebillas-brusellas-_JM" target="_blank">Botas Con Hebillas Brusellas</a>
+    </div>
+    <div class="card">
+      <span class="discount">33% OFF</span>
+      <img src="https://http2.mlstatic.com/D_832314-MLA94609964634_102025-O.jpg" alt="Aplique Multidireccional Exterior  Negro" loading="lazy">
+      <span class="price">$21.744</span>
+      <a href="https://www.mercadolibre.com.ar/aplique-multidireccional-exterior/up/MLAU236115666" target="_blank">Aplique Multidireccional Exterior  Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">33% OFF</span>
+      <img src="https://http2.mlstatic.com/D_718052-MLA92712625206_092025-O.jpg" alt="Combo Maternal 3 Prendas Camison+pijama Lactancia Amamantar" loading="lazy">
+      <span class="price">$39.900</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1518372659-combo-maternal-3-prendas-camisonpijama-lactancia-amamantar-_JM" target="_blank">Combo Maternal 3 Prendas Camison+pijama Lactancia Amamantar</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_957173-MLA94699089338_102025-O.jpg" alt="Ventilador Retractil De Techo Novohome Luz Calida Fria Neutra 6 Velocidades Color Blanco" loading="lazy">
+      <span class="price">$114.590</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-retractil-de-techo-novohome-luz-calida-fria-neutra-6-velocidades-color-blanco/p/MLA54423759" target="_blank">Ventilador Retractil De Techo Novohome Luz Calida Fria Neutra 6 Velocidades Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_722075-MLA100007774147_122025-O.jpg" alt="Licuadora Peabody Pe-ln810r Roja 2 Velocidades Jarra De Vidrio 1.75 Litros" loading="lazy">
+      <span class="price">$67.599</span>
+      <a href="https://www.mercadolibre.com.ar/licuadora-peabody-pe-ln810r-roja-2-velocidades-jarra-de-vidrio-175-litros/p/MLA45202569" target="_blank">Licuadora Peabody Pe-ln810r Roja 2 Velocidades Jarra De Vidrio 1.75 Litros</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_600332-MLA99937530129_112025-O.jpg" alt="Hidrolavadora Gamma Master Wash 2800 G2519ar 2200w" loading="lazy">
+      <span class="price">$174.299</span>
+      <a href="https://www.mercadolibre.com.ar/hidrolavadora-gamma-master-wash-2800-g2519ar-2200w/p/MLA24614561" target="_blank">Hidrolavadora Gamma Master Wash 2800 G2519ar 2200w</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_845367-MLA84834941214_052025-O.jpg" alt="Tablero Basquet Mini Vulpix Original Puerta Oficina Infantil" loading="lazy">
+      <span class="price">$66.816</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1894726956-tablero-basquet-mini-vulpix-original-puerta-oficina-infantil-_JM" target="_blank">Tablero Basquet Mini Vulpix Original Puerta Oficina Infantil</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_635687-MLA98382125822_112025-O.jpg" alt="Kit Puertas Granero Corrediza Riel 1.80 Metros" loading="lazy">
+      <span class="price">$33.101</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1459962055-kit-puertas-granero-corrediza-riel-180-metros-_JM" target="_blank">Kit Puertas Granero Corrediza Riel 1.80 Metros</a>
+    </div>
+    <div class="card">
+      <span class="discount">32% OFF</span>
+      <img src="https://http2.mlstatic.com/D_605630-MLA95798233064_102025-O.jpg" alt="Set Baño Cortina + Ganchos + Protector + Alfombra + Fundas" loading="lazy">
+      <span class="price">$54.629</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2104775592-set-bano-cortina-ganchos-protector-alfombra-fundas-_JM" target="_blank">Set Baño Cortina + Ganchos + Protector + Alfombra + Fundas</a>
+    </div>
+    <div class="card">
+      <span class="discount">31% OFF</span>
+      <img src="https://http2.mlstatic.com/D_679620-MLA96418074658_102025-O.jpg" alt="Banco Hamaca Sillon Colgante De Jardin Plaza Exterior - Gris" loading="lazy">
+      <span class="price">$198.623</span>
+      <a href="https://www.mercadolibre.com.ar/banco-hamaca-sillon-colgante-de-jardin-plaza-exterior-gris/p/MLA35405224" target="_blank">Banco Hamaca Sillon Colgante De Jardin Plaza Exterior - Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">31% OFF</span>
+      <img src="https://http2.mlstatic.com/D_860182-MLA91750763147_092025-O.jpg" alt="Short Gris Oscuro Rigido " loading="lazy">
+      <span class="price">$37.772</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1611568348-short-gris-oscuro-rigido-_JM" target="_blank">Short Gris Oscuro Rigido </a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_814672-MLA99458043894_112025-O.jpg" alt="Philips Oneblade Qp2824/10 Para Cuerpo Y Rostro Carga Usb" loading="lazy">
+      <span class="price">$62.698</span>
+      <a href="https://www.mercadolibre.com.ar/philips-oneblade-qp282410-para-cuerpo-y-rostro-carga-usb/p/MLA24158207" target="_blank">Philips Oneblade Qp2824/10 Para Cuerpo Y Rostro Carga Usb</a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_981509-MLA88108911179_072025-O.jpg" alt="Zapatillas Lite Racer Cln 2.0 Gy7638 adidas" loading="lazy">
+      <span class="price">$64.399</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2182858410-zapatillas-lite-racer-cln-20-gy7638-adidas-_JM" target="_blank">Zapatillas Lite Racer Cln 2.0 Gy7638 adidas</a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_708941-MLA86676305843_062025-O.jpg" alt="Zapatillas Nike Air Max 90 Para Hombre Dm0029-013" loading="lazy">
+      <span class="price">$174.999</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1506808073-zapatillas-nike-air-max-90-para-hombre-dm0029-013-_JM" target="_blank">Zapatillas Nike Air Max 90 Para Hombre Dm0029-013</a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_762717-MLA100270410049_122025-O.jpg" alt="Mesa Plegable 180x74x74cm Exterior Camping Reforzada Zhome Color Blanco" loading="lazy">
+      <span class="price">$69.999</span>
+      <a href="https://www.mercadolibre.com.ar/mesa-plegable-180x74x74cm-exterior-camping-reforzada-zhome-color-blanco/p/MLA62813523" target="_blank">Mesa Plegable 180x74x74cm Exterior Camping Reforzada Zhome Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_718159-MLA93314632850_092025-O.jpg" alt="Cortina Guirnalda Luces Led Papa Noel 3 Mts Fiestas Figuras" loading="lazy">
+      <span class="price">$25.608</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1395432391-cortina-guirnalda-luces-led-papa-noel-3-mts-fiestas-figuras-_JM" target="_blank">Cortina Guirnalda Luces Led Papa Noel 3 Mts Fiestas Figuras</a>
+    </div>
+    <div class="card">
+      <span class="discount">30% OFF</span>
+      <img src="https://http2.mlstatic.com/D_626672-MLA94808085005_102025-O.jpg" alt="Bandeja Con Difusor Y Portasahumerio Ceramica Decoviral A Eleccion" loading="lazy">
+      <span class="price">$23.093</span>
+      <a href="https://www.mercadolibre.com.ar/bandeja-con-difusor-y-portasahumerio-ceramica-decoviral/up/MLAU1004180661" target="_blank">Bandeja Con Difusor Y Portasahumerio Ceramica Decoviral A Eleccion</a>
+    </div>
+    <div class="card">
+      <span class="discount">29% OFF</span>
+      <img src="https://http2.mlstatic.com/D_609909-MLA95707019738_102025-O.jpg" alt="Silla De Comedor Allegra Plastico Moderna Interior Exterior Color Negro 6 Unidades Garden Life" loading="lazy">
+      <span class="price">$179.999</span>
+      <a href="https://www.mercadolibre.com.ar/silla-de-comedor-allegra-plastico-moderna-interior-exterior-color-negro-6-unidades-garden-life/p/MLA44218154" target="_blank">Silla De Comedor Allegra Plastico Moderna Interior Exterior Color Negro 6 Unidades Garden Life</a>
+    </div>
+    <div class="card">
+      <span class="discount">29% OFF</span>
+      <img src="https://http2.mlstatic.com/D_925649-MLA99505545700_112025-O.jpg" alt="Ventilador Techo Sin Aspas Visibles Diseño Moderno Blanco 48 Cm 50/60 Blanco Invisibles Abs 8" loading="lazy">
+      <span class="price">$165.644</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-techo-sin-aspas-visibles-diseno-moderno-blanco/up/MLAU3639208555" target="_blank">Ventilador Techo Sin Aspas Visibles Diseño Moderno Blanco 48 Cm 50/60 Blanco Invisibles Abs 8</a>
+    </div>
+    <div class="card">
+      <span class="discount">29% OFF</span>
+      <img src="https://http2.mlstatic.com/D_821934-MLA94700656663_102025-O.jpg" alt="Adaptador Enchufe Universal Multinorma Para Brasil Kit X 4u" loading="lazy">
+      <span class="price">$34.525</span>
+      <a href="https://www.mercadolibre.com.ar/adaptador-enchufe-universal-multinorma-para-brasil-kit-x-4u/up/MLAU3198188681" target="_blank">Adaptador Enchufe Universal Multinorma Para Brasil Kit X 4u</a>
+    </div>
+    <div class="card">
+      <span class="discount">28% OFF</span>
+      <img src="https://http2.mlstatic.com/D_919222-MLA99475874918_112025-O.jpg" alt="Smart Tv Samsung 50 Uhd 4k 50u8000f" loading="lazy">
+      <span class="price">$639.999</span>
+      <a href="https://www.mercadolibre.com.ar/smart-tv-samsung-50-uhd-4k-50u8000f/p/MLA60250499" target="_blank">Smart Tv Samsung 50 Uhd 4k 50u8000f</a>
+    </div>
+    <div class="card">
+      <span class="discount">28% OFF</span>
+      <img src="https://http2.mlstatic.com/D_868473-MLA99116564154_112025-O.jpg" alt="Kit X2 Neumatico Hifly 175/65 R14 82t Modelo Hf201 T" loading="lazy">
+      <span class="price">$125.695</span>
+      <a href="https://www.mercadolibre.com.ar/kit-x2-neumatico-hifly-17565-r14-82t-modelo-hf201/up/MLAU3634486326" target="_blank">Kit X2 Neumatico Hifly 175/65 R14 82t Modelo Hf201 T</a>
+    </div>
+    <div class="card">
+      <span class="discount">28% OFF</span>
+      <img src="https://http2.mlstatic.com/D_924795-MLA91208609109_082025-O.jpg" alt="Acolchado De Verano 2 Plazas A Queen Cubrecamas Con Fundas" loading="lazy">
+      <span class="price">$61.835</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1456218885-acolchado-de-verano-2-plazas-a-queen-cubrecamas-con-fundas-_JM" target="_blank">Acolchado De Verano 2 Plazas A Queen Cubrecamas Con Fundas</a>
+    </div>
+    <div class="card">
+      <span class="discount">28% OFF</span>
+      <img src="https://http2.mlstatic.com/D_665501-MLA90992049732_092025-O.jpg" alt="Reloj Inteligente Militar Sumergible Con Gps Hombre G3 Negro Elegante Resistente Negro Negro Metálico" loading="lazy">
+      <span class="price">$141.010</span>
+      <a href="https://www.mercadolibre.com.ar/reloj-inteligente-militar-sumergible-con-gps-hombre-g3/up/MLAU3384256059" target="_blank">Reloj Inteligente Militar Sumergible Con Gps Hombre G3 Negro Elegante Resistente Negro Negro Metálico</a>
+    </div>
+    <div class="card">
+      <span class="discount">28% OFF</span>
+      <img src="https://http2.mlstatic.com/D_750974-MLA96673666268_112025-O.jpg" alt="Polera Algodón Hombre Pack X 2 Super Abrigadas!!!" loading="lazy">
+      <span class="price">$46.631</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1136325906-polera-algodon-hombre-pack-x-2-super-abrigadas-_JM" target="_blank">Polera Algodón Hombre Pack X 2 Super Abrigadas!!!</a>
+    </div>
+    <div class="card">
+      <span class="discount">27% OFF</span>
+      <img src="https://http2.mlstatic.com/D_926196-MLA99979897019_112025-O.jpg" alt="Aire Acondicionado Frío/calor Bgh Likon Split Inverter 3010f Lksi35wckw" loading="lazy">
+      <span class="price">$799.999</span>
+      <a href="https://www.mercadolibre.com.ar/aire-acondicionado-friocalor-bgh-likon-split-inverter-3010f-lksi35wckw/p/MLA60949272" target="_blank">Aire Acondicionado Frío/calor Bgh Likon Split Inverter 3010f Lksi35wckw</a>
+    </div>
+    <div class="card">
+      <span class="discount">26% OFF</span>
+      <img src="https://http2.mlstatic.com/D_968337-MLA100567674726_122025-O.jpg" alt="Samsung Galaxy Tab A11 Ee" loading="lazy">
+      <span class="price">$249.999</span>
+      <a href="https://www.mercadolibre.com.ar/samsung-galaxy-tab-a11-ee/p/MLA62627337" target="_blank">Samsung Galaxy Tab A11 Ee</a>
+    </div>
+    <div class="card">
+      <span class="discount">26% OFF</span>
+      <img src="https://http2.mlstatic.com/D_918922-MLA99990239963_112025-O.jpg" alt="Samsung Galaxy A56 5g Dual Sim 256gb 8gb Ram Gris" loading="lazy">
+      <span class="price">$876.500</span>
+      <a href="https://www.mercadolibre.com.ar/samsung-galaxy-a56-5g-dual-sim-256gb-8gb-ram-gris/p/MLA47114363" target="_blank">Samsung Galaxy A56 5g Dual Sim 256gb 8gb Ram Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">26% OFF</span>
+      <img src="https://http2.mlstatic.com/D_962184-MLA73919126031_012024-O.jpg" alt="Reposera Plegable Playera X 2 Reforzada 5 Posiciones Premium" loading="lazy">
+      <span class="price">$88.799</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1185141095-reposera-plegable-playera-x-2-reforzada-5-posiciones-premium-_JM" target="_blank">Reposera Plegable Playera X 2 Reforzada 5 Posiciones Premium</a>
+    </div>
+    <div class="card">
+      <span class="discount">26% OFF</span>
+      <img src="https://http2.mlstatic.com/D_615494-MLA88630930108_072025-O.jpg" alt="Combo X2 Almohadas Viscoelástica Inteligentes 60x35 Negra" loading="lazy">
+      <span class="price">$35.791</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1477107619-combo-x2-almohadas-viscoelastica-inteligentes-60x35-negra-_JM" target="_blank">Combo X2 Almohadas Viscoelástica Inteligentes 60x35 Negra</a>
+    </div>
+    <div class="card">
+      <span class="discount">26% OFF</span>
+      <img src="https://http2.mlstatic.com/D_722083-MLA95970773781_102025-O.jpg" alt="Toallon Secado Rápido Microfibra Grande Liso Absorvente" loading="lazy">
+      <span class="price">$11.092</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1564745171-toallon-secado-rapido-microfibra-grande-liso-absorvente-_JM" target="_blank">Toallon Secado Rápido Microfibra Grande Liso Absorvente</a>
+    </div>
+    <div class="card">
+      <span class="discount">25% OFF</span>
+      <img src="https://http2.mlstatic.com/D_738215-MLA100856640965_122025-O.jpg" alt="Mesa Plegable 180x70x74cm Exterior Camping Reforzada Niviko Color Blanco" loading="lazy">
+      <span class="price">$74.999</span>
+      <a href="https://www.mercadolibre.com.ar/mesa-plegable-180x70x74cm-exterior-camping-reforzada-niviko-color-blanco/p/MLA62988050" target="_blank">Mesa Plegable 180x70x74cm Exterior Camping Reforzada Niviko Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">25% OFF</span>
+      <img src="https://http2.mlstatic.com/D_672875-MLA97108846317_112025-O.jpg" alt="Sidra 1888 Saenz Briones Cosecha Especial 750ml Caja X6" loading="lazy">
+      <span class="price">$41.350</span>
+      <a href="https://www.mercadolibre.com.ar/sidra-1888-saenz-briones-cosecha-especial-750ml-caja-x6/up/MLAU209389050" target="_blank">Sidra 1888 Saenz Briones Cosecha Especial 750ml Caja X6</a>
+    </div>
+    <div class="card">
+      <span class="discount">25% OFF</span>
+      <img src="https://http2.mlstatic.com/D_785184-MLA99501478812_112025-O.jpg" alt="Ventilador Industrial 30 Pulgadas 2 En1 Pie/pared Delhi 180w Cantidad De Aspas 3 Estructura Negro Aspas Negro Diámetro 76.2 Cm Frecuencia 50 Material De Las Aspas Plástico" loading="lazy">
+      <span class="price">$165.000</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-industrial-30-pulgadas-2-en1-piepared-delhi-180w-cantidad-de-aspas-3-estructura-negro-aspas-negro-diametro-762-cm-frecuencia-50-material-de-las-aspas-plastico/p/MLA44968672" target="_blank">Ventilador Industrial 30 Pulgadas 2 En1 Pie/pared Delhi 180w Cantidad De Aspas 3 Estructura Negro Aspas Negro Diámetro 76.2 Cm Frecuencia 50 Material De Las Aspas Plástico</a>
+    </div>
+    <div class="card">
+      <span class="discount">25% OFF</span>
+      <img src="https://http2.mlstatic.com/D_771915-MLA99901857345_112025-O.jpg" alt="Cerveza Heineken Rubia Lata 473ml 150 Años Pack X24 La Barra" loading="lazy">
+      <span class="price">$53.460</span>
+      <a href="https://www.mercadolibre.com.ar/cerveza-heineken-rubia-lata-473ml-150-anos-pack-x24-la-barra/p/MLA26042728" target="_blank">Cerveza Heineken Rubia Lata 473ml 150 Años Pack X24 La Barra</a>
+    </div>
+    <div class="card">
+      <span class="discount">25% OFF</span>
+      <img src="https://http2.mlstatic.com/D_646432-MLA99988193011_112025-O.jpg" alt="Máquina Corta Pelo Profesional Vgr V-003 Turbo 9000 Rpm Usb Color Negro Y Verde" loading="lazy">
+      <span class="price">$106.857</span>
+      <a href="https://www.mercadolibre.com.ar/maquina-corta-pelo-profesional-vgr-v-003-turbo-9000-rpm-usb-color-negro-y-verde/p/MLA37875219" target="_blank">Máquina Corta Pelo Profesional Vgr V-003 Turbo 9000 Rpm Usb Color Negro Y Verde</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_892213-MLA98775028851_112025-O.jpg" alt="Ventilador Liliana 3 En 1 De Pie / Turbo / Pared 18 3 Aspas Metálicas Vpxm4518" loading="lazy">
+      <span class="price">$67.999</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-liliana-3-en-1-de-pie-turbo-pared-18-3-aspas-metalicas-vpxm4518/p/MLA58463692" target="_blank">Ventilador Liliana 3 En 1 De Pie / Turbo / Pared 18 3 Aspas Metálicas Vpxm4518</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_865967-MLA93003548870_092025-O.jpg" alt="Adaptador Inalámbrico Carplay Y Android Auto Usb Plug Mini Negro" loading="lazy">
+      <span class="price">$69.665</span>
+      <a href="https://www.mercadolibre.com.ar/adaptador-inalambrico-carplay-y-android-auto-usb-plug-mini/up/MLAU3449756376" target="_blank">Adaptador Inalámbrico Carplay Y Android Auto Usb Plug Mini Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_658276-MLA98874798589_112025-O.jpg" alt="Set Matero Clubes Completo Termo Mate Laser Afa Boca River" loading="lazy">
+      <span class="price">$59.849</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2084187686-set-matero-clubes-completo-termo-mate-laser-afa-boca-river-_JM" target="_blank">Set Matero Clubes Completo Termo Mate Laser Afa Boca River</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_737524-MLA90553104178_082025-O.jpg" alt="Auriculares Inalámbricos Bluetooth Wave 300 Tws Tune" loading="lazy">
+      <span class="price">$36.936</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2292980748-auriculares-inalambricos-bluetooth-wave-300-tws-tune-_JM" target="_blank">Auriculares Inalámbricos Bluetooth Wave 300 Tws Tune</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_811193-MLA94453144086_102025-O.jpg" alt="Termo Botella Termica De Acero 350 Ml" loading="lazy">
+      <span class="price">$17.327</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1484587713-termo-botella-termica-de-acero-350-ml-_JM" target="_blank">Termo Botella Termica De Acero 350 Ml</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_802325-MLA84149343486_052025-O.jpg" alt="Bermuda De Jean Mom Crema Tiro Medio" loading="lazy">
+      <span class="price">$41.800</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1469855633-bermuda-de-jean-mom-crema-tiro-medio-_JM" target="_blank">Bermuda De Jean Mom Crema Tiro Medio</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_654442-MLA93503246994_102025-O.jpg" alt="Lámpara Velador Escritorio Estilo Nórdico Mesa Luz Moderna Blanco Blanco Cálido" loading="lazy">
+      <span class="price">$22.039</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-velador-escritorio-estilo-nordico-mesa-luz-moderna/up/MLAU3345072486" target="_blank">Lámpara Velador Escritorio Estilo Nórdico Mesa Luz Moderna Blanco Blanco Cálido</a>
+    </div>
+    <div class="card">
+      <span class="discount">24% OFF</span>
+      <img src="https://http2.mlstatic.com/D_868202-MLA91812654664_092025-O.jpg" alt="Kit Silla Plegable X2 Camping Porta Vaso Reforzada 120kg Negro" loading="lazy">
+      <span class="price">$74.479</span>
+      <a href="https://www.mercadolibre.com.ar/kit-silla-plegable-x2-camping-porta-vaso-reforzada-120kg/up/MLAU3412200717" target="_blank">Kit Silla Plegable X2 Camping Porta Vaso Reforzada 120kg Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">23% OFF</span>
+      <img src="https://http2.mlstatic.com/D_902198-MLA99438849326_112025-O.jpg" alt="Pileta Estructural Redonda Avenli 17812 Con Capacidad De 4383 Litros 3 M De Diámetro" loading="lazy">
+      <span class="price">$168.899</span>
+      <a href="https://www.mercadolibre.com.ar/pileta-estructural-redonda-avenli-17812-con-capacidad-de-4383-litros-3-m-de-diametro/p/MLA25596075" target="_blank">Pileta Estructural Redonda Avenli 17812 Con Capacidad De 4383 Litros 3 M De Diámetro</a>
+    </div>
+    <div class="card">
+      <span class="discount">23% OFF</span>
+      <img src="https://http2.mlstatic.com/D_696514-MLA80061077229_102024-O.jpg" alt="Caja Navideña Georgalo Con Sidra, Champagne Y Pan Dulce" loading="lazy">
+      <span class="price">$32.661</span>
+      <a href="https://www.mercadolibre.com.ar/caja-navidena-georgalo-con-sidra-champagne-y-pan-dulce/up/MLAU208232077" target="_blank">Caja Navideña Georgalo Con Sidra, Champagne Y Pan Dulce</a>
+    </div>
+    <div class="card">
+      <span class="discount">23% OFF</span>
+      <img src="https://http2.mlstatic.com/D_774703-MLA95750569992_102025-O.jpg" alt="Bicicleta Infanti Rodado 20 Naranja 3508 Naranja 20  " loading="lazy">
+      <span class="price">$236.390</span>
+      <a href="https://www.mercadolibre.com.ar/bicicleta-infanti-rodado-20-naranja-3508/up/MLAU3155870644" target="_blank">Bicicleta Infanti Rodado 20 Naranja 3508 Naranja 20  </a>
+    </div>
+    <div class="card">
+      <span class="discount">23% OFF</span>
+      <img src="https://http2.mlstatic.com/D_643659-MLA98549255239_112025-O.jpg" alt="Beyblade X Beybodex Bx Lanzador Winder Flame  Varios Modelos" loading="lazy">
+      <span class="price">$22.313</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2034289420-beyblade-x-beybodex-bx-lanzador-winder-flame-varios-modelos-_JM" target="_blank">Beyblade X Beybodex Bx Lanzador Winder Flame  Varios Modelos</a>
+    </div>
+    <div class="card">
+      <span class="discount">23% OFF</span>
+      <img src="https://http2.mlstatic.com/D_954350-MLA99870215669_112025-O.jpg" alt="Termotanque 80 Litros Electrico Alta Recuperacion Qualiti Color Negro" loading="lazy">
+      <span class="price">$418.603</span>
+      <a href="https://www.mercadolibre.com.ar/termotanque-80-litros-electrico-alta-recuperacion-qualiti-color-negro/p/MLA54232258" target="_blank">Termotanque 80 Litros Electrico Alta Recuperacion Qualiti Color Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_743198-MLA99505494131_112025-O.jpg" alt="Reposera Silla Gravedad Cero Plegable Reforzada" loading="lazy">
+      <span class="price">$84.366</span>
+      <a href="https://www.mercadolibre.com.ar/reposera-silla-gravedad-cero-plegable-reforzada/p/MLA62530842" target="_blank">Reposera Silla Gravedad Cero Plegable Reforzada</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_658919-MLA99462363208_112025-O.jpg" alt="Parlante Portatil Noblex Psb800p Bluetooth 40w Color Negro" loading="lazy">
+      <span class="price">$77.899</span>
+      <a href="https://www.mercadolibre.com.ar/parlante-portatil-noblex-psb800p-bluetooth-40w-color-negro/p/MLA49570087" target="_blank">Parlante Portatil Noblex Psb800p Bluetooth 40w Color Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_895593-MLA95697603684_102025-O.jpg" alt="Pileta Estructural Tiburoncito N°8 X 3.05 Cm De Ancho X 3.05 M De Diámetro" loading="lazy">
+      <span class="price">$205.599</span>
+      <a href="https://www.mercadolibre.com.ar/pileta-estructural-tiburoncito-n8-x-305-cm-de-ancho-x-305-m-de-diametro/p/MLA13151833" target="_blank">Pileta Estructural Tiburoncito N°8 X 3.05 Cm De Ancho X 3.05 M De Diámetro</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_626162-MLA95951137743_102025-O.jpg" alt="Caja Navideña Bonafide Premium Con Vino Y Espumante Navidad" loading="lazy">
+      <span class="price">$32.174</span>
+      <a href="https://www.mercadolibre.com.ar/caja-navidena-bonafide-premium-con-vino-y-espumante-navidad/up/MLAU3504861473" target="_blank">Caja Navideña Bonafide Premium Con Vino Y Espumante Navidad</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_992020-MLA79073168490_092024-O.jpg" alt="Cortina Ambiente Doble , 4 Paños" loading="lazy">
+      <span class="price">$21.812</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-655243283-cortina-ambiente-doble-4-panos-_JM" target="_blank">Cortina Ambiente Doble , 4 Paños</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_847726-MLA89659827391_082025-O.jpg" alt="Afilador De Cuchillos Profesional De Diamante Marrón Oscuro" loading="lazy">
+      <span class="price">$49.140</span>
+      <a href="https://www.mercadolibre.com.ar/afilador-de-cuchillos-profesional-de-diamante/up/MLAU3268982979" target="_blank">Afilador De Cuchillos Profesional De Diamante Marrón Oscuro</a>
+    </div>
+    <div class="card">
+      <span class="discount">22% OFF</span>
+      <img src="https://http2.mlstatic.com/D_663623-MLA91735181893_092025-O.jpg" alt="Remera Con Aplique Kavachi | Talles Grandes" loading="lazy">
+      <span class="price">$24.926</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2322145768-remera-con-aplique-kavachi-talles-grandes-_JM" target="_blank">Remera Con Aplique Kavachi | Talles Grandes</a>
+    </div>
+    <div class="card">
+      <span class="discount">21% OFF</span>
+      <img src="https://http2.mlstatic.com/D_767171-MLA93745111675_092025-O.jpg" alt="Bicicleta Nordic X1 By Slp R29 21v Shimano Disco Suspension" loading="lazy">
+      <span class="price">$249.338</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1146166398-bicicleta-nordic-x1-by-slp-r29-21v-shimano-disco-suspension-_JM" target="_blank">Bicicleta Nordic X1 By Slp R29 21v Shimano Disco Suspension</a>
+    </div>
+    <div class="card">
+      <span class="discount">21% OFF</span>
+      <img src="https://http2.mlstatic.com/D_923830-MLA99691878150_122025-O.jpg" alt="Desmalezadora 52cc 2 Tiempos Kld  + Set Tijeras De Poda" loading="lazy">
+      <span class="price">$157.160</span>
+      <a href="https://www.mercadolibre.com.ar/desmalezadora-52cc-2-tiempos-kld-set-tijeras-de-poda/p/MLA2053704862" target="_blank">Desmalezadora 52cc 2 Tiempos Kld  + Set Tijeras De Poda</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_891204-MLA99884702071_112025-O.jpg" alt="Cama Elastica Melfit 1,40 Mts Trampolin Red Chicos B-jump Lona De Salto Negro Cobertor De Resortes Amarillo" loading="lazy">
+      <span class="price">$199.820</span>
+      <a href="https://www.mercadolibre.com.ar/cama-elastica-melfit-140-mts-trampolin-red-chicos-b-jump-lona-de-salto-negro-cobertor-de-resortes-amarillo/p/MLA46996317" target="_blank">Cama Elastica Melfit 1,40 Mts Trampolin Red Chicos B-jump Lona De Salto Negro Cobertor De Resortes Amarillo</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_781043-MLA99501107520_112025-O.jpg" alt="Afeitadora Eléctrica Hombre Shaver Vgr V-325 Recargable Color Negro Y Azul" loading="lazy">
+      <span class="price">$35.340</span>
+      <a href="https://www.mercadolibre.com.ar/afeitadora-electrica-hombre-shaver-vgr-v-325-recargable-color-negro-y-azul/p/MLA37255352" target="_blank">Afeitadora Eléctrica Hombre Shaver Vgr V-325 Recargable Color Negro Y Azul</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_629300-MLA99433387932_112025-O.jpg" alt="Proyector Led Smart Android 11 Fhd 4500 Lumenes Wifi Bt Color Blanco" loading="lazy">
+      <span class="price">$53.866</span>
+      <a href="https://www.mercadolibre.com.ar/proyector-led-smart-android-11-fhd-4500-lumenes-wifi-bt-color-blanco/p/MLA28251222" target="_blank">Proyector Led Smart Android 11 Fhd 4500 Lumenes Wifi Bt Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_927926-MLA95390533734_102025-O.jpg" alt="Bloques Magnéticos Para Armar 100 Piezas Construcción Tiles 100" loading="lazy">
+      <span class="price">$67.192</span>
+      <a href="https://www.mercadolibre.com.ar/bloques-magneticos-para-armar-100-piezas-construccion-tiles/up/MLAU3288342418" target="_blank">Bloques Magnéticos Para Armar 100 Piezas Construcción Tiles 100</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_616691-MLA87444464187_072025-O.jpg" alt="Masajeador Cervical Y Lumbar Gadnic 8 Rodillos Bidireccionales Rotación 4d Luz Infrarroja Velocidad Variable" loading="lazy">
+      <span class="price">$41.699</span>
+      <a href="https://www.mercadolibre.com.ar/masajeador-cervical-y-lumbar-gadnic-8-rodillos-bidireccionales-rotacion-4d-luz-infrarroja-velocidad-variable/p/MLA42929032" target="_blank">Masajeador Cervical Y Lumbar Gadnic 8 Rodillos Bidireccionales Rotación 4d Luz Infrarroja Velocidad Variable</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_827577-MLA100049890707_122025-O.jpg" alt="Mini Drone P15 Camara Dual Video Plegable Bateria Recargable Smart Tech" loading="lazy">
+      <span class="price">$67.899</span>
+      <a href="https://www.mercadolibre.com.ar/mini-drone-p15-camara-dual-video-plegable-bateria-recargable-smart-tech/p/MLA52426076" target="_blank">Mini Drone P15 Camara Dual Video Plegable Bateria Recargable Smart Tech</a>
+    </div>
+    <div class="card">
+      <span class="discount">20% OFF</span>
+      <img src="https://http2.mlstatic.com/D_707172-MLA94369989630_102025-O.jpg" alt="Toallón Grande Baño Infantil Personajes 140x75cm Playero" loading="lazy">
+      <span class="price">$11.992</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-934199594-toallon-grande-bano-infantil-personajes-140x75cm-playero-_JM" target="_blank">Toallón Grande Baño Infantil Personajes 140x75cm Playero</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_908132-MLA99531708570_122025-O.jpg" alt="Pileta Estructural Rectangular Pelopincho 1055 Con Capacidad De 4500 Litros 2x3 M" loading="lazy">
+      <span class="price">$246.989</span>
+      <a href="https://www.mercadolibre.com.ar/pileta-estructural-rectangular-pelopincho-1055-con-capacidad-de-4500-litros-2x3-m/p/MLA8961672" target="_blank">Pileta Estructural Rectangular Pelopincho 1055 Con Capacidad De 4500 Litros 2x3 M</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_877068-MLA94916761672_102025-O.jpg" alt="Silla De Comedor Desillas Tolix Con Estructura Color Negro Mate X 6 Unidades" loading="lazy">
+      <span class="price">$223.999</span>
+      <a href="https://www.mercadolibre.com.ar/silla-de-comedor-desillas-tolix-con-estructura-color-negro-mate-x-6-unidades/p/MLA18647684" target="_blank">Silla De Comedor Desillas Tolix Con Estructura Color Negro Mate X 6 Unidades</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_673237-MLA99471985408_112025-O.jpg" alt="Monitor Valkyrie Vh2714 27 2k Qhd 200hz-144hz Gsync 1ms Ips Verde Musgo" loading="lazy">
+      <span class="price">$348.300</span>
+      <a href="https://www.mercadolibre.com.ar/monitor-valkyrie-vh2714-27-2k-qhd-200hz-144hz-gsync-1ms-ips-verde-musgo/p/MLA52089018" target="_blank">Monitor Valkyrie Vh2714 27 2k Qhd 200hz-144hz Gsync 1ms Ips Verde Musgo</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_808631-MLA98864895715_112025-O.jpg" alt="Cover Cubrecama Linea Colors Verano Reversible Liso 1 1/2 Pz" loading="lazy">
+      <span class="price">$21.794</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-639014953-cover-cubrecama-linea-colors-verano-reversible-liso-1-12-pz-_JM" target="_blank">Cover Cubrecama Linea Colors Verano Reversible Liso 1 1/2 Pz</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_955028-MLA91475300170_092025-O.jpg" alt="Juego De Mesa - Dos Uno - Juego De Naipes Cartas Familiar" loading="lazy">
+      <span class="price">$3.795</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1501271129-juego-de-mesa-dos-uno-juego-de-naipes-cartas-familiar-_JM" target="_blank">Juego De Mesa - Dos Uno - Juego De Naipes Cartas Familiar</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_603246-MLA93925160473_102025-O.jpg" alt="Lampara Estilo Nórdico Mesa D Luz Velador Escritorio Moderno" loading="lazy">
+      <span class="price">$20.994</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1472783595-lampara-estilo-nordico-mesa-d-luz-velador-escritorio-moderno-_JM" target="_blank">Lampara Estilo Nórdico Mesa D Luz Velador Escritorio Moderno</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_677845-MLA91355245300_092025-O.jpg" alt="Remera Algodon Excelente Acabado Hombre Xespecial 7xl-10xl" loading="lazy">
+      <span class="price">$76.308</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-777070105-remera-algodon-excelente-acabado-hombre-xespecial-7xl-10xl-_JM" target="_blank">Remera Algodon Excelente Acabado Hombre Xespecial 7xl-10xl</a>
+    </div>
+    <div class="card">
+      <span class="discount">19% OFF</span>
+      <img src="https://http2.mlstatic.com/D_634143-MLA81162424994_122024-O.jpg" alt="Calza Pescador Modelador Faja 22cm - 100% Lycra - Verano - Mujer - Moda Libre 1 - Talle Standar * Xs - Xx *" loading="lazy">
+      <span class="price">$52.487</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-694043820-calza-pescador-modelador-faja-22cm-100-lycra-verano-mujer-moda-libre-1-talle-standar-xs-xx--_JM" target="_blank">Calza Pescador Modelador Faja 22cm - 100% Lycra - Verano - Mujer - Moda Libre 1 - Talle Standar * Xs - Xx *</a>
+    </div>
+    <div class="card">
+      <span class="discount">18% OFF</span>
+      <img src="https://http2.mlstatic.com/D_921665-MLA81463932349_122024-O.jpg" alt="Carro Plegable Portatil Acero Reforzado Camping Playa 100 Kg" loading="lazy">
+      <span class="price">$89.470</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1910697184-carro-plegable-portatil-acero-reforzado-camping-playa-100-kg-_JM" target="_blank">Carro Plegable Portatil Acero Reforzado Camping Playa 100 Kg</a>
+    </div>
+    <div class="card">
+      <span class="discount">18% OFF</span>
+      <img src="https://http2.mlstatic.com/D_802305-MLA95679505222_102025-O.jpg" alt="Auriculares Inalámbricos Xiaomi Redmi Buds 6 Play Negro" loading="lazy">
+      <span class="price">$21.999</span>
+      <a href="https://www.mercadolibre.com.ar/auriculares-inalambricos-xiaomi-redmi-buds-6-play-negro/p/MLA39962085" target="_blank">Auriculares Inalámbricos Xiaomi Redmi Buds 6 Play Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">17% OFF</span>
+      <img src="https://http2.mlstatic.com/D_699953-MLA100855537699_122025-O.jpg" alt="Cortina Led Cálida O Fria 3x3 300 Luces 220v " loading="lazy">
+      <span class="price">$19.779</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1372392281-cortina-led-calida-o-fria-3x3-300-luces-220v-_JM" target="_blank">Cortina Led Cálida O Fria 3x3 300 Luces 220v </a>
+    </div>
+    <div class="card">
+      <span class="discount">17% OFF</span>
+      <img src="https://http2.mlstatic.com/D_746731-MLA86732372951_062025-O.jpg" alt="Juego De Cortina Blackout Textil Bloquea Luz Presilla Oculta" loading="lazy">
+      <span class="price">$24.734</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1396872945-juego-de-cortina-blackout-textil-bloquea-luz-presilla-oculta-_JM" target="_blank">Juego De Cortina Blackout Textil Bloquea Luz Presilla Oculta</a>
+    </div>
+    <div class="card">
+      <span class="discount">17% OFF</span>
+      <img src="https://http2.mlstatic.com/D_879157-MLA94040872789_102025-O.jpg" alt="Toallón Hotelero Algodón Grande Liso Fantasía 385g Coteminas" loading="lazy">
+      <span class="price">$11.006</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-782685076-toallon-hotelero-algodon-grande-liso-fantasia-385g-coteminas-_JM" target="_blank">Toallón Hotelero Algodón Grande Liso Fantasía 385g Coteminas</a>
+    </div>
+    <div class="card">
+      <span class="discount">17% OFF</span>
+      <img src="https://http2.mlstatic.com/D_861108-MLA99443172230_112025-O.jpg" alt="Espejo Paraiso Decorativo Redondo 50 Cm Baño Maquillaje. Marco Madera Paraiso" loading="lazy">
+      <span class="price">$149.821</span>
+      <a href="https://www.mercadolibre.com.ar/espejo-paraiso-decorativo-redondo-50-cm-bano-maquillaje-marco-madera-paraiso/p/MLA50334797" target="_blank">Espejo Paraiso Decorativo Redondo 50 Cm Baño Maquillaje. Marco Madera Paraiso</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_907176-MLA96142511857_102025-O.jpg" alt="Proyector Portátil 4k Hy300 Full Hd Wifi Hdmi Android 11 Bt 5.0" loading="lazy">
+      <span class="price">$55.909</span>
+      <a href="https://www.mercadolibre.com.ar/proyector-portatil-4k-hy300-full-hd-wifi-hdmi-android-11-bt-50/p/MLA42238146" target="_blank">Proyector Portátil 4k Hy300 Full Hd Wifi Hdmi Android 11 Bt 5.0</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_989234-MLA89105458662_082025-O.jpg" alt="Auto Infantil A Bateria Motosport 6v Con Control Remoto" loading="lazy">
+      <span class="price">$212.915</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2143728934-auto-infantil-a-bateria-motosport-6v-con-control-remoto-_JM" target="_blank">Auto Infantil A Bateria Motosport 6v Con Control Remoto</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_859801-MLA69926321977_062023-O.jpg" alt="Cortina Led Cálida O Fría 3x2 240 Luces 220v" loading="lazy">
+      <span class="price">$16.791</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1431995402-cortina-led-calida-o-fria-3x2-240-luces-220v-_JM" target="_blank">Cortina Led Cálida O Fría 3x2 240 Luces 220v</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_907169-MLA100049674757_122025-O.jpg" alt="Climatizador Portátil Philco Cppfr001023g Frío 130 W Con Control Remoto" loading="lazy">
+      <span class="price">$176.599</span>
+      <a href="https://www.mercadolibre.com.ar/climatizador-portatil-philco-cppfr001023g-frio-130-w-con-control-remoto/p/MLA45459306" target="_blank">Climatizador Portátil Philco Cppfr001023g Frío 130 W Con Control Remoto</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_664871-MLA99563617012_122025-O.jpg" alt="Omega 3 Max 1000 Epa + 500 Dha Innovanaturals 60caps Ifos Goed Neutro" loading="lazy">
+      <span class="price">$97.400</span>
+      <a href="https://www.mercadolibre.com.ar/omega-3-max-1000-epa-500-dha-innovanaturals-60caps-ifos-goed/p/MLA20895346" target="_blank">Omega 3 Max 1000 Epa + 500 Dha Innovanaturals 60caps Ifos Goed Neutro</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_611252-MLA99569986024_122025-O.jpg" alt="Kanji Lavarropas Automático 4 Kg Silver Carga Superior Color Gris Oscuro" loading="lazy">
+      <span class="price">$319.999</span>
+      <a href="https://www.mercadolibre.com.ar/kanji-lavarropas-automatico-4-kg-silver-carga-superior-color-gris-oscuro/p/MLA47106315" target="_blank">Kanji Lavarropas Automático 4 Kg Silver Carga Superior Color Gris Oscuro</a>
+    </div>
+    <div class="card">
+      <span class="discount">16% OFF</span>
+      <img src="https://http2.mlstatic.com/D_697231-MLA91534615556_092025-O.jpg" alt="Combo Rack Tv Nórdico 120cm Blanco Con Mesa Ratona" loading="lazy">
+      <span class="price">$113.714</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1105919554-combo-rack-tv-nordico-120cm-blanco-con-mesa-ratona-_JM" target="_blank">Combo Rack Tv Nórdico 120cm Blanco Con Mesa Ratona</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_798397-MLA97244077149_112025-O.jpg" alt="Zapatillas De Running Runblaze Ki6134 adidas" loading="lazy">
+      <span class="price">$72.249</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2537232966-zapatillas-de-running-runblaze-ki6134-adidas-_JM" target="_blank">Zapatillas De Running Runblaze Ki6134 adidas</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_879184-MLA90557082581_082025-O.jpg" alt="Celular Motorola Moto G15 256/4gb Ram + Funda De Regalo Gris" loading="lazy">
+      <span class="price">$254.999</span>
+      <a href="https://www.mercadolibre.com.ar/celular-motorola-moto-g15-2564gb-ram--funda-de-regalo/up/MLAU3371236661" target="_blank">Celular Motorola Moto G15 256/4gb Ram + Funda De Regalo Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_754376-MLA99419116672_112025-O.jpg" alt="Set Arte Infantil Dibujo Fibra Maletín Metálico Valija X 145 Piezas V-art By Vicky" loading="lazy">
+      <span class="price">$27.755</span>
+      <a href="https://www.mercadolibre.com.ar/set-arte-infantil-dibujo-fibra-maletin-metalico-valija-x-145-piezas-v-art-by-vicky/p/MLA37351720" target="_blank">Set Arte Infantil Dibujo Fibra Maletín Metálico Valija X 145 Piezas V-art By Vicky</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_872185-MLA51948124026_102022-O.jpg" alt="Sillón X6 Plástico Melody Simil Ratán Reforzado Quality " loading="lazy">
+      <span class="price">$211.403</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1193279821-sillon-x6-plastico-melody-simil-ratan-reforzado-quality-_JM" target="_blank">Sillón X6 Plástico Melody Simil Ratán Reforzado Quality </a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_929814-MLA95842638289_102025-O.jpg" alt="Carpeta Album Coleccionador Pokemon + 20 Cartas Especiales" loading="lazy">
+      <span class="price">$21.134</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2086874426-carpeta-album-coleccionador-pokemon-20-cartas-especiales-_JM" target="_blank">Carpeta Album Coleccionador Pokemon + 20 Cartas Especiales</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_868917-MLA97327575391_112025-O.jpg" alt="Toallon Toalla Algodón Grande Baño Pack X2 Juego Prata Liso" loading="lazy">
+      <span class="price">$38.046</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1574251585-toallon-toalla-algodon-grande-bano-pack-x2-juego-prata-liso-_JM" target="_blank">Toallon Toalla Algodón Grande Baño Pack X2 Juego Prata Liso</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_956008-MLA92786938732_092025-O.jpg" alt="Exhibidor Pintura Para Tela Eq + 36 Potes (1 De Cada Color) Exhibidor Con 36 Potes" loading="lazy">
+      <span class="price">$71.057</span>
+      <a href="https://www.mercadolibre.com.ar/exhibidor-pintura-para-tela-eq--36-potes-1-de-cada-color/up/MLAU3395146632" target="_blank">Exhibidor Pintura Para Tela Eq + 36 Potes (1 De Cada Color) Exhibidor Con 36 Potes</a>
+    </div>
+    <div class="card">
+      <span class="discount">15% OFF</span>
+      <img src="https://http2.mlstatic.com/D_995164-MLA84467745629_052025-O.jpg" alt="Wide Leg Crema" loading="lazy">
+      <span class="price">$46.252</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1967929506-wide-leg-crema-_JM" target="_blank">Wide Leg Crema</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_797689-MLA89134722744_082025-O.jpg" alt="Smart Tv Noblex Roku 32 Pulgadas Led Hd Roku Netflix-youtube" loading="lazy">
+      <span class="price">$207.323</span>
+      <a href="https://www.mercadolibre.com.ar/smart-tv-noblex-roku-32-pulgadas-led-hd-roku-netflixyoutube/up/MLAU3114034655" target="_blank">Smart Tv Noblex Roku 32 Pulgadas Led Hd Roku Netflix-youtube</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_621065-MLA92441493552_092025-O.jpg" alt="Ventilador Turbo 12  Exahome Piso Pared Hogar Oficina Mejor 76.2 Cm 50hz Negro Negro Pvc 5" loading="lazy">
+      <span class="price">$38.403</span>
+      <a href="https://www.mercadolibre.com.ar/ventilador-turbo-12--exahome-piso-pared-hogar-oficina-mejor/up/MLAU265626419" target="_blank">Ventilador Turbo 12  Exahome Piso Pared Hogar Oficina Mejor 76.2 Cm 50hz Negro Negro Pvc 5</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_629520-MLA99937551627_112025-O.jpg" alt="Nubianeo 3 5g 256 Gb Amarillo8 Gb Ram" loading="lazy">
+      <span class="price">$429.999</span>
+      <a href="https://www.mercadolibre.com.ar/nubianeo-3-5g-256-gb-amarillo8-gb-ram/p/MLA54104093" target="_blank">Nubianeo 3 5g 256 Gb Amarillo8 Gb Ram</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_808014-MLA99475861308_112025-O.jpg" alt="Pileta Estructural Rectangular Mor 001000 Con Capacidad De 400 Litros 1.06x1.15 M" loading="lazy">
+      <span class="price">$40.000</span>
+      <a href="https://www.mercadolibre.com.ar/pileta-estructural-rectangular-mor-001000-con-capacidad-de-400-litros-106x115-m/p/MLA9900673" target="_blank">Pileta Estructural Rectangular Mor 001000 Con Capacidad De 400 Litros 1.06x1.15 M</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_737857-MLA98066092922_112025-O.jpg" alt="Pantalon Mujer Bengalina Elastizada Oxford Con Cierre" loading="lazy">
+      <span class="price">$17.099</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1472917875-pantalon-mujer-bengalina-elastizada-oxford-con-cierre-_JM" target="_blank">Pantalon Mujer Bengalina Elastizada Oxford Con Cierre</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_982098-MLA92978424713_092025-O.jpg" alt="Funda Silicona Silicone Case Para iPhone + Vidrio Templado" loading="lazy">
+      <span class="price">$15.261</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1583686651-funda-silicona-silicone-case-para-iphone-vidrio-templado-_JM" target="_blank">Funda Silicona Silicone Case Para iPhone + Vidrio Templado</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_792913-MLA93642755660_102025-O.jpg" alt="Jean Clásico Izzullino Hombre Talle 38 A 48" loading="lazy">
+      <span class="price">$42.322</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-607472996-jean-clasico-izzullino-hombre-talle-38-a-48-_JM" target="_blank">Jean Clásico Izzullino Hombre Talle 38 A 48</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_972598-MLA93922923741_102025-O.jpg" alt="Lámpara Velador Modern Estilo Nórdico Mesa D Luz Escritorio Blanco Blanco Cálido" loading="lazy">
+      <span class="price">$21.374</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-velador-modern-estilo-nordico-mesa-d-luz-escritorio/up/MLAU3352506299" target="_blank">Lámpara Velador Modern Estilo Nórdico Mesa D Luz Escritorio Blanco Blanco Cálido</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_879639-MLA100470471172_122025-O.jpg" alt="Promo X3! Producto Sorpresa Tecnología Box Deluxe Smart" loading="lazy">
+      <span class="price">$31.634</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2654047150-promo-x3-producto-sorpresa-tecnologia-box-deluxe-smart-_JM" target="_blank">Promo X3! Producto Sorpresa Tecnología Box Deluxe Smart</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_893552-MLA89965205957_082025-O.jpg" alt="Lámpara Velador Rgb C/control Mesa De Luz Escritorio Nórdico Blanco Rgb" loading="lazy">
+      <span class="price">$40.184</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-velador-rgb-ccontrol-mesa-de-luz-escritorio-nordico/up/MLAU3361111160" target="_blank">Lámpara Velador Rgb C/control Mesa De Luz Escritorio Nórdico Blanco Rgb</a>
+    </div>
+    <div class="card">
+      <span class="discount">14% OFF</span>
+      <img src="https://http2.mlstatic.com/D_852995-MLA93503704710_102025-O.jpg" alt="Lámpara Led Velador Moderno Escritorio Minimalista Nórdico Blanco Blanco Cálido" loading="lazy">
+      <span class="price">$21.374</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-led-velador-moderno-escritorio-minimalista-nordico/up/MLAU3337926280" target="_blank">Lámpara Led Velador Moderno Escritorio Minimalista Nórdico Blanco Blanco Cálido</a>
+    </div>
+    <div class="card">
+      <span class="discount">13% OFF</span>
+      <img src="https://http2.mlstatic.com/D_782183-MLA95705710992_102025-O.jpg" alt="Auriculares Bluetooth Xiaomi Redmi Buds 6 Play Color Blanco" loading="lazy">
+      <span class="price">$20.799</span>
+      <a href="https://www.mercadolibre.com.ar/auriculares-bluetooth-xiaomi-redmi-buds-6-play-color-blanco/p/MLA41149389" target="_blank">Auriculares Bluetooth Xiaomi Redmi Buds 6 Play Color Blanco</a>
+    </div>
+    <div class="card">
+      <span class="discount">13% OFF</span>
+      <img src="https://http2.mlstatic.com/D_768848-MLA100010758442_122025-O.jpg" alt="Tablet Lenovo 10 Pulgadas 64gb 4gb + Funda Antigolpes Con Soporte Y Lápiz Óptico Control Paternal Tab 10 Kids Android 14 Wifi Bluetooth Full Hd" loading="lazy">
+      <span class="price">$259.999</span>
+      <a href="https://www.mercadolibre.com.ar/tablet-lenovo-10-pulgadas-64gb-4gb-funda-antigolpes-con-soporte-y-lapiz-optico-control-paternal-tab-10-kids-android-14-wifi-bluetooth-full-hd/p/MLA50123008" target="_blank">Tablet Lenovo 10 Pulgadas 64gb 4gb + Funda Antigolpes Con Soporte Y Lápiz Óptico Control Paternal Tab 10 Kids Android 14 Wifi Bluetooth Full Hd</a>
+    </div>
+    <div class="card">
+      <span class="discount">12% OFF</span>
+      <img src="https://http2.mlstatic.com/D_656294-MLA97455563115_112025-O.jpg" alt="Smart Tv Noblex Roku 32 Pulgadas Led Hd" loading="lazy">
+      <span class="price">$227.598</span>
+      <a href="https://www.mercadolibre.com.ar/smart-tv-noblex-roku-32-pulgadas-led-hd/p/MLA47671555" target="_blank">Smart Tv Noblex Roku 32 Pulgadas Led Hd</a>
+    </div>
+    <div class="card">
+      <span class="discount">12% OFF</span>
+      <img src="https://http2.mlstatic.com/D_873202-MLA99957228779_112025-O.jpg" alt="Auriculares Tipo C Para iPhone" loading="lazy">
+      <span class="price">$18.354</span>
+      <a href="https://www.mercadolibre.com.ar/auriculares-tipo-c-para-iphone/p/MLA44414145" target="_blank">Auriculares Tipo C Para iPhone</a>
+    </div>
+    <div class="card">
+      <span class="discount">12% OFF</span>
+      <img src="https://http2.mlstatic.com/D_949280-MLA85062630444_052025-O.jpg" alt="Combo X2 Jean Recto Clásico Izzullino De Hombre Del 38 Al 48" loading="lazy">
+      <span class="price">$85.215</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1803404374-combo-x2-jean-recto-clasico-izzullino-de-hombre-del-38-al-48-_JM" target="_blank">Combo X2 Jean Recto Clásico Izzullino De Hombre Del 38 Al 48</a>
+    </div>
+    <div class="card">
+      <span class="discount">11% OFF</span>
+      <img src="https://http2.mlstatic.com/D_701144-MLA101185988179_122025-O.jpg" alt="Monitor Led 24 Oasis 60hz Full Hd 1920x1080 Hdmi/vga Negro Negro" loading="lazy">
+      <span class="price">$132.307</span>
+      <a href="https://www.mercadolibre.com.ar/monitor-led-24-oasis-60hz-full-hd-1920x1080-hdmivga-negro/up/MLAU3358033248" target="_blank">Monitor Led 24 Oasis 60hz Full Hd 1920x1080 Hdmi/vga Negro Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">11% OFF</span>
+      <img src="https://http2.mlstatic.com/D_939628-MLA76340963231_052024-O.jpg" alt="Perfume Antonio Banderas The Icon Elixir Para Hombre 100ml" loading="lazy">
+      <span class="price">$43.220</span>
+      <a href="https://www.mercadolibre.com.ar/perfume-antonio-banderas-the-icon-elixir-para-hombre-100ml/p/MLA36478180" target="_blank">Perfume Antonio Banderas The Icon Elixir Para Hombre 100ml</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_683123-MLA99850626101_112025-O.jpg" alt="Nubianeo 3 Gt 5g 256 Gb Gris12 Gb Ram" loading="lazy">
+      <span class="price">$579.999</span>
+      <a href="https://www.mercadolibre.com.ar/nubianeo-3-gt-5g-256-gb-gris12-gb-ram/p/MLA54624394" target="_blank">Nubianeo 3 Gt 5g 256 Gb Gris12 Gb Ram</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_821267-MLA99639566209_112025-O.jpg" alt="Tablet Para Niños 7 Pulgadas Con Funda Protectora De Silicona Doble Soporte Edna Antigolpe Control Parental 2gb 32gb Android Rosa" loading="lazy">
+      <span class="price">$134.900</span>
+      <a href="https://www.mercadolibre.com.ar/tablet-para-ninos-7-pulgadas-con-funda-protectora-de-silicona-doble-soporte-edna-antigolpe-control-parental-2gb-32gb-android-rosa/p/MLA58933638" target="_blank">Tablet Para Niños 7 Pulgadas Con Funda Protectora De Silicona Doble Soporte Edna Antigolpe Control Parental 2gb 32gb Android Rosa</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_795324-MLA93794481865_092025-O.jpg" alt="Capsulas Para Bronceado Nude De Goshbabe Para 60 Dias Sin Sabor" loading="lazy">
+      <span class="price">$56.000</span>
+      <a href="https://www.mercadolibre.com.ar/capsulas-para-bronceado-nude-de-goshbabe-para-60-dias/up/MLAU384328679" target="_blank">Capsulas Para Bronceado Nude De Goshbabe Para 60 Dias Sin Sabor</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_862871-MLA51092540453_082022-O.jpg" alt="Bateria Musical Juguete Infantil Dia Del Niño Oferta Regalo" loading="lazy">
+      <span class="price">$49.482</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-871695733-bateria-musical-juguete-infantil-dia-del-nino-oferta-regalo-_JM" target="_blank">Bateria Musical Juguete Infantil Dia Del Niño Oferta Regalo</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_887295-MLA99983818457_112025-O.jpg" alt="Smart Tv Enova 43'' Full Hd Android Tv" loading="lazy">
+      <span class="price">$349.999</span>
+      <a href="https://www.mercadolibre.com.ar/smart-tv-enova-43-full-hd-android-tv/p/MLA47359754" target="_blank">Smart Tv Enova 43'' Full Hd Android Tv</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_847626-MLA89639843504_082025-O.jpg" alt="Espejo Digital Luz Led Táctil Desempañador Baño Rectangular" loading="lazy">
+      <span class="price">$175.031</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1756523232-espejo-digital-luz-led-tactil-desempanador-bano-rectangular-_JM" target="_blank">Espejo Digital Luz Led Táctil Desempañador Baño Rectangular</a>
+    </div>
+    <div class="card">
+      <span class="discount">10% OFF</span>
+      <img src="https://http2.mlstatic.com/D_754201-MLA97437600085_112025-O.jpg" alt="Pelota Futbol 11 Messi Inter Miami, N°5, Prof. Peso 450 Gr" loading="lazy">
+      <span class="price">$35.010</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1389309871-pelota-futbol-11-messi-inter-miami-n5-prof-peso-450-gr-_JM" target="_blank">Pelota Futbol 11 Messi Inter Miami, N°5, Prof. Peso 450 Gr</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_679016-MLA99880015379_112025-O.jpg" alt="Control Inalámbrico Sony Ps5 Playstation Dualsense Edición Limitada 30 Años Color Gris" loading="lazy">
+      <span class="price">$199.999</span>
+      <a href="https://www.mercadolibre.com.ar/control-inalambrico-sony-ps5-playstation-dualsense-edicion-limitada-30-anos-color-gris/p/MLA42237107" target="_blank">Control Inalámbrico Sony Ps5 Playstation Dualsense Edición Limitada 30 Años Color Gris</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_627039-MLA51292218239_082022-O.jpg" alt="Bóxer Seamless Eyelit Rayado Hombre De Algodón Modelo 4625" loading="lazy">
+      <span class="price">$10.820</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2243166450-boxer-seamless-eyelit-rayado-hombre-de-algodon-modelo-4625-_JM" target="_blank">Bóxer Seamless Eyelit Rayado Hombre De Algodón Modelo 4625</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_656603-MLA77516568452_072024-O.jpg" alt="Oferta Juego Vajilla 6 Playos + 6 Hondos + Fuente De Regalo Blanco Parma" loading="lazy">
+      <span class="price">$53.873</span>
+      <a href="https://www.mercadolibre.com.ar/oferta-juego-vajilla-6-playos--6-hondos--fuente-de-regalo/up/MLAU231033611" target="_blank">Oferta Juego Vajilla 6 Playos + 6 Hondos + Fuente De Regalo Blanco Parma</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_893548-MLA89152652361_082025-O.jpg" alt="Rollers Profesionales Aluminio Extensibles Mod 301 + Bolso" loading="lazy">
+      <span class="price">$90.578</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-737643475-rollers-profesionales-aluminio-extensibles-mod-301-bolso-_JM" target="_blank">Rollers Profesionales Aluminio Extensibles Mod 301 + Bolso</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_838550-MLA44547464659_012021-O.jpg" alt="Rollers 2 En 1 Patin Profesional 4 Ruedas Pu Extensible Metal Mod: 2en1/301" loading="lazy">
+      <span class="price">$101.079</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-742308516-rollers-2-en-1-patin-profesional-4-ruedas-pu-extensible-metal-mod-2en1301-_JM" target="_blank">Rollers 2 En 1 Patin Profesional 4 Ruedas Pu Extensible Metal Mod: 2en1/301</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_957630-MLA99700974840_122025-O.jpg" alt="Espejo Redondo 60 Cm Aluminio Negro Premium Duradero Resistente De Pared Ideal Baño Living Showroom Vestibulo Recibidor Dormitorio Galeria Estilo Elegante Amplio Angulo Visual Decoracion Cuantoarte" loading="lazy">
+      <span class="price">$56.586</span>
+      <a href="https://www.mercadolibre.com.ar/espejo-redondo-60-cm-aluminio-negro-premium-duradero-resistente-de-pared-ideal-bano-living-showroom-vestibulo-recibidor-dormitorio-galeria-estilo-elegante-amplio-angulo-visual-decoracion-cuantoarte/p/MLA45423944" target="_blank">Espejo Redondo 60 Cm Aluminio Negro Premium Duradero Resistente De Pared Ideal Baño Living Showroom Vestibulo Recibidor Dormitorio Galeria Estilo Elegante Amplio Angulo Visual Decoracion Cuantoarte</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_624741-MLA93635082388_102025-O.jpg" alt="Bermudas Cargo Camuflada Hombre Talle 38 Al 48" loading="lazy">
+      <span class="price">$62.723</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-640979104-bermudas-cargo-camuflada-hombre-talle-38-al-48-_JM" target="_blank">Bermudas Cargo Camuflada Hombre Talle 38 Al 48</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_778759-MLA88987718860_082025-O.jpg" alt="Bóxer Rayado Sin Costura Uso Diario Hombre Modelo 4615" loading="lazy">
+      <span class="price">$10.820</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2245579332-boxer-rayado-sin-costura-uso-diario-hombre-modelo-4615-_JM" target="_blank">Bóxer Rayado Sin Costura Uso Diario Hombre Modelo 4615</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_957402-MLA95873628791_102025-O.jpg" alt="Rack De Tv Escandinavo Nórdico  Con Fondo " loading="lazy">
+      <span class="price">$87.541</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1130462436-rack-de-tv-escandinavo-nordico-con-fondo-_JM" target="_blank">Rack De Tv Escandinavo Nórdico  Con Fondo </a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_935052-MLA50264646030_062022-O.jpg" alt="Pack X2 Boxer Eyelit Hombre Sin Costuras, Cómodo Y Anatómico" loading="lazy">
+      <span class="price">$18.365</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1114348266-pack-x2-boxer-eyelit-hombre-sin-costuras-comodo-y-anatomico-_JM" target="_blank">Pack X2 Boxer Eyelit Hombre Sin Costuras, Cómodo Y Anatómico</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_723919-MLA99845943603_112025-O.jpg" alt="Short Bermuda Negra Basica Mujer Talle 2 Al 6 Chabanas" loading="lazy">
+      <span class="price">$36.090</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2613202552-short-bermuda-negra-basica-mujer-talle-2-al-6-chabanas-_JM" target="_blank">Short Bermuda Negra Basica Mujer Talle 2 Al 6 Chabanas</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_819488-MLA89840075778_082025-O.jpg" alt="Pack X2 Bóxer Cómodos Y Clásicos Eyelit Modelo 514625" loading="lazy">
+      <span class="price">$21.641</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2345794560-pack-x2-boxer-comodos-y-clasicos-eyelit-modelo-514625-_JM" target="_blank">Pack X2 Bóxer Cómodos Y Clásicos Eyelit Modelo 514625</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_844046-MLA98287376111_112025-O.jpg" alt="Media Deportiva Eyelit En Hilo De Algodón 3500" loading="lazy">
+      <span class="price">$6.949</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-930329909-media-deportiva-eyelit-en-hilo-de-algodon-3500-_JM" target="_blank">Media Deportiva Eyelit En Hilo De Algodón 3500</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_643086-MLA99158615225_112025-O.jpg" alt="Hilo Algodon Con Lentejuelas Boreal Lho Ovillos 100 Grs 3 Ovillos" loading="lazy">
+      <span class="price">$18.862</span>
+      <a href="https://www.mercadolibre.com.ar/hilo-algodon-con-lentejuelas-boreal-lho-ovillos-100-grs/up/MLAU3602551743" target="_blank">Hilo Algodon Con Lentejuelas Boreal Lho Ovillos 100 Grs 3 Ovillos</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_653868-MLA91192537772_092025-O.jpg" alt="Mochila  Infantil De Peluche Trendy , Diseño Capibara. Marrón Peluche" loading="lazy">
+      <span class="price">$12.355</span>
+      <a href="https://www.mercadolibre.com.ar/mochila--infantil-de-peluche-trendy--diseno-capibara/up/MLAU3397109585" target="_blank">Mochila  Infantil De Peluche Trendy , Diseño Capibara. Marrón Peluche</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_833843-MLA100277775284_122025-O.jpg" alt="Billetera Porta Billete C/br Mozo Taxi  - Mv Cueros (460)" loading="lazy">
+      <span class="price">$7.220</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-791960207-billetera-porta-billete-cbr-mozo-taxi-mv-cueros-460-_JM" target="_blank">Billetera Porta Billete C/br Mozo Taxi  - Mv Cueros (460)</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_993361-MLA98081041226_112025-O.jpg" alt="Set Caja Herr. Stanley 16 (21x40x18)+set Herr.+linter. Táct. Negro Y Amarillo" loading="lazy">
+      <span class="price">$80.322</span>
+      <a href="https://www.mercadolibre.com.ar/set-caja-herr-stanley-16-21x40x18set-herrlinter-tact/up/MLAU3262431571" target="_blank">Set Caja Herr. Stanley 16 (21x40x18)+set Herr.+linter. Táct. Negro Y Amarillo</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_829951-MLA99514149690_112025-O.jpg" alt="Set Cocina Antiadherente Completo Ollas Sartenes Utensilios" loading="lazy">
+      <span class="price">$270.749</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2617014292-set-cocina-antiadherente-completo-ollas-sartenes-utensilios-_JM" target="_blank">Set Cocina Antiadherente Completo Ollas Sartenes Utensilios</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_609872-MLA84983587411_052025-O.jpg" alt="Camiseta Eyelit Algodon Manga Larga Cuello Redondo Art 173" loading="lazy">
+      <span class="price">$32.760</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-922812357-camiseta-eyelit-algodon-manga-larga-cuello-redondo-art-173-_JM" target="_blank">Camiseta Eyelit Algodon Manga Larga Cuello Redondo Art 173</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_955696-MLA99989891543_112025-O.jpg" alt="Organizadores Para Placard 7 Pzas + Alfombras De Regalo" loading="lazy">
+      <span class="price">$72.199</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1597365157-organizadores-para-placard-7-pzas-alfombras-de-regalo-_JM" target="_blank">Organizadores Para Placard 7 Pzas + Alfombras De Regalo</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_780283-MLA93923029781_102025-O.jpg" alt="Lámpara Velador Estilo Nórdico Mesa D Luz Escritorio Moderno Blanco Blanco Cálido" loading="lazy">
+      <span class="price">$20.756</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-velador-estilo-nordico-mesa-d-luz-escritorio-moderno/up/MLAU3333814143" target="_blank">Lámpara Velador Estilo Nórdico Mesa D Luz Escritorio Moderno Blanco Blanco Cálido</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_892549-MLA44997558907_022021-O.jpg" alt="Bóxer De Modal Sin Costura Hombre, Suave Y Cómodo 541" loading="lazy">
+      <span class="price">$11.813</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-758177609-boxer-de-modal-sin-costura-hombre-suave-y-comodo-541-_JM" target="_blank">Bóxer De Modal Sin Costura Hombre, Suave Y Cómodo 541</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_683024-MLA98739470312_112025-O.jpg" alt="Hilo Algodon 8/8 Mercerizado Lho Madejas 150 Grs A Eleccion 3 Madejas" loading="lazy">
+      <span class="price">$23.374</span>
+      <a href="https://www.mercadolibre.com.ar/hilo-algodon-88-mercerizado-lho-madejas-150-grs-a-eleccion/up/MLAU3608189777" target="_blank">Hilo Algodon 8/8 Mercerizado Lho Madejas 150 Grs A Eleccion 3 Madejas</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_890384-MLA51088186067_082022-O.jpg" alt="Remera De Hombre Manga Corta Escote V Art 445 Eyelit" loading="lazy">
+      <span class="price">$27.697</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-884680394-remera-de-hombre-manga-corta-escote-v-art-445-eyelit-_JM" target="_blank">Remera De Hombre Manga Corta Escote V Art 445 Eyelit</a>
+    </div>
+    <div class="card">
+      <span class="discount">9% OFF</span>
+      <img src="https://http2.mlstatic.com/D_803994-MLA100567478068_122025-O.jpg" alt="Pack X12 Bóxer Hombre Liso Algodón Con Elastico Eyelit 594" loading="lazy">
+      <span class="price">$201.466</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-760352292-pack-x12-boxer-hombre-liso-algodon-con-elastico-eyelit-594-_JM" target="_blank">Pack X12 Bóxer Hombre Liso Algodón Con Elastico Eyelit 594</a>
+    </div>
+    <div class="card">
+      <span class="discount">8% OFF</span>
+      <img src="https://http2.mlstatic.com/D_639397-MLA100161134740_122025-O.jpg" alt="Red Futbol Tenis Con Soporte Unnic Cancha Portatil Voley Playa Parque De Acero 2 En 1 Regulable En Altura + Bolso + Kit Anti Viento + Estacas 3 Mts + Soga" loading="lazy">
+      <span class="price">$98.937</span>
+      <a href="https://www.mercadolibre.com.ar/red-futbol-tenis-con-soporte-unnic-cancha-portatil-voley-playa-parque-de-acero-2-en-1-regulable-en-altura-bolso-kit-anti-viento-estacas-3-mts-soga/p/MLA43920181" target="_blank">Red Futbol Tenis Con Soporte Unnic Cancha Portatil Voley Playa Parque De Acero 2 En 1 Regulable En Altura + Bolso + Kit Anti Viento + Estacas 3 Mts + Soga</a>
+    </div>
+    <div class="card">
+      <span class="discount">7% OFF</span>
+      <img src="https://http2.mlstatic.com/D_810584-MLA94555698856_102025-O.jpg" alt="Masajeador Cervical Gadnic Ombu Eléctrico 8 Nodos Tecnología Shiatsu Función De Calor Infrarrojo Rotación Automática Control Integrado Ergonómico Portátil Adaptador Auto 12v Cuello Espalda" loading="lazy">
+      <span class="price">$39.599</span>
+      <a href="https://www.mercadolibre.com.ar/masajeador-cervical-gadnic-ombu-electrico-8-nodos-tecnologia-shiatsu-funcion-de-calor-infrarrojo-rotacion-automatica-control-integrado-ergonomico-portatil-adaptador-auto-12v-cuello-espalda/p/MLA22530156" target="_blank">Masajeador Cervical Gadnic Ombu Eléctrico 8 Nodos Tecnología Shiatsu Función De Calor Infrarrojo Rotación Automática Control Integrado Ergonómico Portátil Adaptador Auto 12v Cuello Espalda</a>
+    </div>
+    <div class="card">
+      <span class="discount">7% OFF</span>
+      <img src="https://http2.mlstatic.com/D_804598-MLA99488823220_112025-O.jpg" alt="Guirnalda Led Solar 15 Mts Dimerizable Control + Panel Solar Luces Blanco Cálido" loading="lazy">
+      <span class="price">$78.825</span>
+      <a href="https://www.mercadolibre.com.ar/guirnalda-led-solar-15-mts-dimerizable-control-panel-solar-luces-blanco-calido/p/MLA44198275" target="_blank">Guirnalda Led Solar 15 Mts Dimerizable Control + Panel Solar Luces Blanco Cálido</a>
+    </div>
+    <div class="card">
+      <span class="discount">6% OFF</span>
+      <img src="https://http2.mlstatic.com/D_838189-MLA99487056476_112025-O.jpg" alt="Motorola Moto G75 256gb 8gb Gris Certificación Militar" loading="lazy">
+      <span class="price">$380.699</span>
+      <a href="https://www.mercadolibre.com.ar/motorola-moto-g75-256gb-8gb-gris-certificacion-militar/p/MLA45258398" target="_blank">Motorola Moto G75 256gb 8gb Gris Certificación Militar</a>
+    </div>
+    <div class="card">
+      <span class="discount">6% OFF</span>
+      <img src="https://http2.mlstatic.com/D_861422-MLA99448684044_112025-O.jpg" alt="Smartphone Moto G35 5g 256 Gb 8ram Negro" loading="lazy">
+      <span class="price">$291.306</span>
+      <a href="https://www.mercadolibre.com.ar/smartphone-moto-g35-5g-256-gb-8ram-negro/p/MLA47317457" target="_blank">Smartphone Moto G35 5g 256 Gb 8ram Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">6% OFF</span>
+      <img src="https://http2.mlstatic.com/D_674397-MLA99441363332_112025-O.jpg" alt="Teléfono Celular Xiaomi Redmi 14c 256gb 16gb Ram (8+8) Dual Sim Color Negro" loading="lazy">
+      <span class="price">$238.998</span>
+      <a href="https://www.mercadolibre.com.ar/telefono-celular-xiaomi-redmi-14c-256gb-16gb-ram-88-dual-sim-color-negro/p/MLA50181493" target="_blank">Teléfono Celular Xiaomi Redmi 14c 256gb 16gb Ram (8+8) Dual Sim Color Negro</a>
+    </div>
+    <div class="card">
+      <span class="discount">6% OFF</span>
+      <img src="https://http2.mlstatic.com/D_642395-MLA99971049049_112025-O.jpg" alt="Gazebo South Port By Gadnic 3x3-m Plegable 3x3 Reforzado Paredes Con Ventana Resistente Al Viento" loading="lazy">
+      <span class="price">$187.999</span>
+      <a href="https://www.mercadolibre.com.ar/gazebo-south-port-by-gadnic-3x3-m-plegable-3x3-reforzado-paredes-con-ventana-resistente-al-viento/p/MLA22621397" target="_blank">Gazebo South Port By Gadnic 3x3-m Plegable 3x3 Reforzado Paredes Con Ventana Resistente Al Viento</a>
+    </div>
+    <div class="card">
+      <span class="discount">5% OFF</span>
+      <img src="https://http2.mlstatic.com/D_966962-MLA96125677877_102025-O.jpg" alt="Pelopincho 1043 Pileta Estructural Rectangular Con Capacidad De 2800 Litros 1.6x2.7 M" loading="lazy">
+      <span class="price">$219.989</span>
+      <a href="https://www.mercadolibre.com.ar/pelopincho-1043-pileta-estructural-rectangular-con-capacidad-de-2800-litros-16x27-m/p/MLA8961674" target="_blank">Pelopincho 1043 Pileta Estructural Rectangular Con Capacidad De 2800 Litros 1.6x2.7 M</a>
+    </div>
+    <div class="card">
+      <span class="discount">5% OFF</span>
+      <img src="https://http2.mlstatic.com/D_754211-MLA93811456824_102025-O.jpg" alt="Borrador De Vello Smud Original" loading="lazy">
+      <span class="price">$56.990</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1507641303-borrador-de-vello-smud-original-_JM" target="_blank">Borrador De Vello Smud Original</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_986886-MLA93926400293_102025-O.jpg" alt="Lampara Mesa Deluz Velador Escritorio Moderno Estilo Nórdico" loading="lazy">
+      <span class="price">$19.759</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2026822970-lampara-mesa-deluz-velador-escritorio-moderno-estilo-nordico-_JM" target="_blank">Lampara Mesa Deluz Velador Escritorio Moderno Estilo Nórdico</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_802431-MLA97252413447_112025-O.jpg" alt="Esponja Magica 6 Unidades Todas Las Superficies Sin Esfuerzo Blanco" loading="lazy">
+      <span class="price">$14.204</span>
+      <a href="https://www.mercadolibre.com.ar/esponja-magica-6-unidades-todas-las-superficies-sin-esfuerzo/up/MLAU3541988186" target="_blank">Esponja Magica 6 Unidades Todas Las Superficies Sin Esfuerzo Blanco</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_658135-MLA91338631657_082025-O.jpg" alt="Termotanque Electrico Alta Recuperacion 80 Litros Qualiti" loading="lazy">
+      <span class="price">$416.155</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2095844990-termotanque-electrico-alta-recuperacion-80-litros-qualiti-_JM" target="_blank">Termotanque Electrico Alta Recuperacion 80 Litros Qualiti</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_779192-MLA92661380987_092025-O.jpg" alt="Plegable Escurridor + Balde, Ideal Camping Motorhome Pesca Celeste" loading="lazy">
+      <span class="price">$36.900</span>
+      <a href="https://www.mercadolibre.com.ar/plegable-escurridor--balde-ideal-camping-motorhome-pesca/up/MLAU3072018178" target="_blank">Plegable Escurridor + Balde, Ideal Camping Motorhome Pesca Celeste</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_832878-MLA97959251551_112025-O.jpg" alt="Linterna Táctica - Led - Lidimi L675a 60w" loading="lazy">
+      <span class="price">$97.990</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1578950299-linterna-tactica-led-lidimi-l675a-60w-_JM" target="_blank">Linterna Táctica - Led - Lidimi L675a 60w</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_730918-MLA98219477625_112025-O.jpg" alt="Toallon Toalla Algodon Hotelero Calidad Juego Santista Liso" loading="lazy">
+      <span class="price">$13.496</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-833001694-toallon-toalla-algodon-hotelero-calidad-juego-santista-liso-_JM" target="_blank">Toallon Toalla Algodon Hotelero Calidad Juego Santista Liso</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_688263-MLA100490737555_122025-O.jpg" alt="Mochila Maternal Bolso Bebé Impermeable Moderna + Cambiador" loading="lazy">
+      <span class="price">$79.002</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1937359064-mochila-maternal-bolso-bebe-impermeable-moderna-cambiador-_JM" target="_blank">Mochila Maternal Bolso Bebé Impermeable Moderna + Cambiador</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_697286-MLA94160589937_102025-O.jpg" alt="Lampara Velador Estilo Nórdico Mesa Luz Escritorio Moderno Negro Blanco Cálido" loading="lazy">
+      <span class="price">$17.811</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-velador-estilo-nordico-mesa-luz-escritorio-moderno/up/MLAU3462879081" target="_blank">Lampara Velador Estilo Nórdico Mesa Luz Escritorio Moderno Negro Blanco Cálido</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_671100-MLA97788352240_112025-O.jpg" alt="Bermudas Cargo Importada Talles Especiales (50 Al 54)" loading="lazy">
+      <span class="price">$70.304</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-935521443-bermudas-cargo-importada-talles-especiales-50-al-54-_JM" target="_blank">Bermudas Cargo Importada Talles Especiales (50 Al 54)</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_604666-MLA92782780468_092025-O.jpg" alt="Exhibidor Base Acrilica Eq Completo + Mueble Exhibidor Mueble Exhibidor Con 60 Potes" loading="lazy">
+      <span class="price">$181.206</span>
+      <a href="https://www.mercadolibre.com.ar/exhibidor-base-acrilica-eq-completo--mueble-exhibidor/up/MLAU3115473456" target="_blank">Exhibidor Base Acrilica Eq Completo + Mueble Exhibidor Mueble Exhibidor Con 60 Potes</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_682201-MLA92140848089_092025-O.jpg" alt="Conjunto Top Y Pollera Con Tajo Rayas Moda Mujer S Al 2xl" loading="lazy">
+      <span class="price">$20.815</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1515032409-conjunto-top-y-pollera-con-tajo-rayas-moda-mujer-s-al-2xl-_JM" target="_blank">Conjunto Top Y Pollera Con Tajo Rayas Moda Mujer S Al 2xl</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_875543-MLA96076227833_102025-O.jpg" alt="Pantalon Gabardina Clasico Talles Especiales 50 Al 60 Izzu" loading="lazy">
+      <span class="price">$60.918</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-680869378-pantalon-gabardina-clasico-talles-especiales-50-al-60-izzu-_JM" target="_blank">Pantalon Gabardina Clasico Talles Especiales 50 Al 60 Izzu</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_788595-MLA94803538270_102025-O.jpg" alt="Combo X 4 Jeans Clasicos Talle 38 Al 48" loading="lazy">
+      <span class="price">$165.623</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-739998241-combo-x-4-jeans-clasicos-talle-38-al-48-_JM" target="_blank">Combo X 4 Jeans Clasicos Talle 38 Al 48</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_754849-MLA97505408748_112025-O.jpg" alt="Linterna Táctica Lidimi Ld-l1516a 12500 Lm Led 120w" loading="lazy">
+      <span class="price">$134.725</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2559685330-linterna-tactica-lidimi-ld-l1516a-12500-lm-led-120w-_JM" target="_blank">Linterna Táctica Lidimi Ld-l1516a 12500 Lm Led 120w</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_950001-MLA95734939912_102025-O.jpg" alt="Jeans Clasico Izzullino Talle Especial Del 50 Al 60" loading="lazy">
+      <span class="price">$52.254</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1410024639-jeans-clasico-izzullino-talle-especial-del-50-al-60-_JM" target="_blank">Jeans Clasico Izzullino Talle Especial Del 50 Al 60</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_734163-MLA97897681486_112025-O.jpg" alt="Parlante Portátil Lidimi Ld-s653" loading="lazy">
+      <span class="price">$137.600</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1574700489-parlante-portatil-lidimi-ld-s653-_JM" target="_blank">Parlante Portátil Lidimi Ld-s653</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_617705-MLA53282888797_012023-O.jpg" alt="Bóxer Hombre Algodón Liso  Pierna Larga" loading="lazy">
+      <span class="price">$22.086</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2341282764-boxer-hombre-algodon-liso-pierna-larga-_JM" target="_blank">Bóxer Hombre Algodón Liso  Pierna Larga</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_919740-MLA89649600597_082025-O.jpg" alt="Mochila Viaje De Mano, Tamaño P/ Cabina Reforzada Espaciosa" loading="lazy">
+      <span class="price">$52.155</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1455388743-mochila-viaje-de-mano-tamano-p-cabina-reforzada-espaciosa-_JM" target="_blank">Mochila Viaje De Mano, Tamaño P/ Cabina Reforzada Espaciosa</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_959296-MLA93503045112_102025-O.jpg" alt="Lámpara Estilo Nórdico Mesa D Luz Velador Escritorio Moderno Marrón Claro Blanco Cálido" loading="lazy">
+      <span class="price">$20.186</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-estilo-nordico-mesa-d-luz-velador-escritorio-moderno/up/MLAU3320213297" target="_blank">Lámpara Estilo Nórdico Mesa D Luz Velador Escritorio Moderno Marrón Claro Blanco Cálido</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_708162-MLA81515182339_122024-O.jpg" alt="Espejo Redondo 70 Cm Plata Aluminio Para Pared Cuantoarte Plateado" loading="lazy">
+      <span class="price">$92.906</span>
+      <a href="https://www.mercadolibre.com.ar/espejo-redondo-70-cm-plata-aluminio-para-pared-cuantoarte/up/MLAU2906290749" target="_blank">Espejo Redondo 70 Cm Plata Aluminio Para Pared Cuantoarte Plateado</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_653062-MLA93932891301_102025-O.jpg" alt="Lámpara De Escritorio Mesa De Luz Velador Moderno Nórdico Marrón Claro Blanco Cálido" loading="lazy">
+      <span class="price">$23.939</span>
+      <a href="https://www.mercadolibre.com.ar/lampara-de-escritorio-mesa-de-luz-velador-moderno-nordico/up/MLAU3461402712" target="_blank">Lámpara De Escritorio Mesa De Luz Velador Moderno Nórdico Marrón Claro Blanco Cálido</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_660049-MLA98737152737_112025-O.jpg" alt="Cinturón Ajustable Para Espalda Con Almohadillas Core Press L" loading="lazy">
+      <span class="price">$89.642</span>
+      <a href="https://www.mercadolibre.com.ar/cinturon-ajustable-para-espalda-con-almohadillas-core-press/up/MLAU3566044475" target="_blank">Cinturón Ajustable Para Espalda Con Almohadillas Core Press L</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_664310-MLA91548957906_092025-O.jpg" alt="Rack De Tv Estilo Nórdico En Melamina Oferta Lanzamiento!!! " loading="lazy">
+      <span class="price">$95.664</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1105891995-rack-de-tv-estilo-nordico-en-melamina-oferta-lanzamiento-_JM" target="_blank">Rack De Tv Estilo Nórdico En Melamina Oferta Lanzamiento!!! </a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_617060-MLA97794914492_112025-O.jpg" alt="Remera Lisa Algodon Excelenteacabado Hombre Xespecial 7x-10x" loading="lazy">
+      <span class="price">$76.308</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-701050216-remera-lisa-algodon-excelenteacabado-hombre-xespecial-7x-10x-_JM" target="_blank">Remera Lisa Algodon Excelenteacabado Hombre Xespecial 7x-10x</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_869116-MLA95650199491_102025-O.jpg" alt="Mesa Plegable Portátil Acero Camping Jardin Playa Montaña Color Negro" loading="lazy">
+      <span class="price">$70.930</span>
+      <a href="https://www.mercadolibre.com.ar/mesa-plegable-portatil-acero-camping-jardin-playa-montana-color-negro/p/MLA57481046" target="_blank">Mesa Plegable Portátil Acero Camping Jardin Playa Montaña Color Negro</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_601883-MLA89355369622_082025-O.jpg" alt="Sabanas Queen 2 Plazas 150 Hilos 160x200cm Juego Kamacolor" loading="lazy">
+      <span class="price">$55.513</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-917482811-sabanas-queen-2-plazas-150-hilos-160x200cm-juego-kamacolor-_JM" target="_blank">Sabanas Queen 2 Plazas 150 Hilos 160x200cm Juego Kamacolor</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_755541-MLA82037467591_012025-O.jpg" alt="Reloj Para Hombre Pulsera - Curren 8329 Azul Marino Azul Marino Azul Marino" loading="lazy">
+      <span class="price">$68.481</span>
+      <a href="https://www.mercadolibre.com.ar/reloj-para-hombre-pulsera--curren-8329/up/MLAU237081059" target="_blank">Reloj Para Hombre Pulsera - Curren 8329 Azul Marino Azul Marino Azul Marino</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_609088-MLA95627419208_102025-O.jpg" alt="Bermudas Cargo Importadas Talles Especiales (48 Al 60) Yd " loading="lazy">
+      <span class="price">$68.138</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1400009897-bermudas-cargo-importadas-talles-especiales-48-al-60-yd-_JM" target="_blank">Bermudas Cargo Importadas Talles Especiales (48 Al 60) Yd </a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_996615-MLA95455813715_102025-O.jpg" alt="Bermudas Cargo Importada 38 Al 48" loading="lazy">
+      <span class="price">$63.084</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-935519403-bermudas-cargo-importada-38-al-48-_JM" target="_blank">Bermudas Cargo Importada 38 Al 48</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_902773-MLA97571579787_112025-O.jpg" alt="Pantalón Morley Negro Kavachi Mujer Talles Grandes" loading="lazy">
+      <span class="price">$26.068</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1557871755-pantalon-morley-negro-kavachi-mujer-talles-grandes-_JM" target="_blank">Pantalón Morley Negro Kavachi Mujer Talles Grandes</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_779802-MLA95833621317_102025-O.jpg" alt="Ganchos Percheros Dobles De Aluminio Kit X 10 + Tornillos !!" loading="lazy">
+      <span class="price">$16.786</span>
+      <a href="https://www.mercadolibre.com.ar/ganchos-percheros-dobles-de-aluminio-kit-x-10-tornillos-/p/MLA52213742" target="_blank">Ganchos Percheros Dobles De Aluminio Kit X 10 + Tornillos !!</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_884007-MLA91847631122_092025-O.jpg" alt="Top Transfer Lentejuela Varios Colores Ropa Para Salir Mujer" loading="lazy">
+      <span class="price">$22.472</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1419647643-top-transfer-lentejuela-varios-colores-ropa-para-salir-mujer-_JM" target="_blank">Top Transfer Lentejuela Varios Colores Ropa Para Salir Mujer</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_959452-MLA100751892472_122025-O.jpg" alt="Billetera Cuero Porta Billete Mozo Taxi - Mv Cueros (402)" loading="lazy">
+      <span class="price">$11.737</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2141749488-billetera-cuero-porta-billete-mozo-taxi-mv-cueros-402-_JM" target="_blank">Billetera Cuero Porta Billete Mozo Taxi - Mv Cueros (402)</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_834589-MLA91218969423_082025-O.jpg" alt="Uniforme Médico Gram Alba Spandex Azul Marino" loading="lazy">
+      <span class="price">$66.500</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1517831047-uniforme-medico-gram-alba-spandex-azul-marino-_JM" target="_blank">Uniforme Médico Gram Alba Spandex Azul Marino</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_991469-MLA94806420637_102025-O.jpg" alt="Centro De Mesa Con 4 Esferas Y Florero Gota Decoviral A Eleccion" loading="lazy">
+      <span class="price">$59.274</span>
+      <a href="https://www.mercadolibre.com.ar/centro-de-mesa-con-4-esferas-y-florero-gota-decoviral/up/MLAU2372536106" target="_blank">Centro De Mesa Con 4 Esferas Y Florero Gota Decoviral A Eleccion</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_743971-MLA99331650144_112025-O.jpg" alt="Salsa De Tomate Perita Triturado Botella De Vidrio 500 Gramos Sabor Pampeano" loading="lazy">
+      <span class="price">$3.851</span>
+      <a href="https://www.mercadolibre.com.ar/salsa-de-tomate-perita-triturado-botella-de-vidrio-500-gramos-sabor-pampeano/p/MLA43752763" target="_blank">Salsa De Tomate Perita Triturado Botella De Vidrio 500 Gramos Sabor Pampeano</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_640469-MLA75276700976_032024-O.jpg" alt="Bóxer Estampado De Algodón Elastizado, Suave  Y Resistente" loading="lazy">
+      <span class="price">$19.755</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-914201548-boxer-estampado-de-algodon-elastizado-suave-y-resistente-_JM" target="_blank">Bóxer Estampado De Algodón Elastizado, Suave  Y Resistente</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_689649-MLA93650628858_102025-O.jpg" alt="Pantalon Hombre Gabardina Clasico Izzullino" loading="lazy">
+      <span class="price">$49.637</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-680869159-pantalon-hombre-gabardina-clasico-izzullino-_JM" target="_blank">Pantalon Hombre Gabardina Clasico Izzullino</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_899181-MLA92589428129_092025-O.jpg" alt="Alfombra Baño Antideslizante Living Piso 60x40cm Shaggy" loading="lazy">
+      <span class="price">$7.500</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1535049927-alfombra-bano-antideslizante-living-piso-60x40cm-shaggy-_JM" target="_blank">Alfombra Baño Antideslizante Living Piso 60x40cm Shaggy</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_943638-MLA89368806342_082025-O.jpg" alt="Bebedero Silencioso Mascotas Fuente De Agua 2l Mybestfriend Azul" loading="lazy">
+      <span class="price">$46.013</span>
+      <a href="https://www.mercadolibre.com.ar/bebedero-silencioso-mascotas-fuente-de-agua-2l-mybestfriend/up/MLAU3324509597" target="_blank">Bebedero Silencioso Mascotas Fuente De Agua 2l Mybestfriend Azul</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_909329-MLA97579570085_112025-O.jpg" alt="Kavachi Musculosa Morley Escote V Mujer Talles Grandes" loading="lazy">
+      <span class="price">$18.989</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2396092194-kavachi-musculosa-morley-escote-v-mujer-talles-grandes-_JM" target="_blank">Kavachi Musculosa Morley Escote V Mujer Talles Grandes</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_910872-MLA99014343664_112025-O.jpg" alt="Sábanas Una 1  1/2 Plaza Kamacolor 150h Percal Super Suave" loading="lazy">
+      <span class="price">$45.124</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-868263023-sabanas-una-1-12-plaza-kamacolor-150h-percal-super-suave-_JM" target="_blank">Sábanas Una 1  1/2 Plaza Kamacolor 150h Percal Super Suave</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_894430-MLA86465532608_062025-O.jpg" alt="Bóxer Corto Hombre Algodón, Uso Diario" loading="lazy">
+      <span class="price">$17.646</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-2341222116-boxer-corto-hombre-algodon-uso-diario-_JM" target="_blank">Bóxer Corto Hombre Algodón, Uso Diario</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_980647-MLA100454466548_122025-O.jpg" alt="Mate Animal Print Imperial Fleje Alpaca + Bombilla Pico Loro Plateado Interior Acero" loading="lazy">
+      <span class="price">$40.755</span>
+      <a href="https://www.mercadolibre.com.ar/mate-animal-print-imperial-fleje-alpaca--bombilla-pico-loro/up/MLAU3664809372" target="_blank">Mate Animal Print Imperial Fleje Alpaca + Bombilla Pico Loro Plateado Interior Acero</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_904433-MLA96515723661_102025-O.jpg" alt="Filtro Humo Para Purificador Extractor Fino Spar 4 Filtros" loading="lazy">
+      <span class="price">$41.999</span>
+      <a href="https://www.mercadolibre.com.ar/filtro-humo-para-purificador-extractor-fino-spar-4-filtros/up/MLAU219043612" target="_blank">Filtro Humo Para Purificador Extractor Fino Spar 4 Filtros</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_857276-MLA93755172781_092025-O.jpg" alt="Mini Short Pollera Negro Rígido" loading="lazy">
+      <span class="price">$41.972</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1451490525-mini-short-pollera-negro-rigido-_JM" target="_blank">Mini Short Pollera Negro Rígido</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_886448-MLA96239512762_102025-O.jpg" alt="Peluche Dinosaurio Proyector Luces Star Belly" loading="lazy">
+      <span class="price">$33.788</span>
+      <a href="https://www.mercadolibre.com.ar/peluche-dinosaurio-proyector-luces-star-belly/p/MLA21325546" target="_blank">Peluche Dinosaurio Proyector Luces Star Belly</a>
+    </div>
+    <div class="card">
+      
+      <img src="https://http2.mlstatic.com/D_990090-MLA93756210951_092025-O.jpg" alt="Mini Short Pollera Celeste Rígido" loading="lazy">
+      <span class="price">$40.798</span>
+      <a href="https://articulo.mercadolibre.com.ar/MLA-1914999716-mini-short-pollera-celeste-rigido-_JM" target="_blank">Mini Short Pollera Celeste Rígido</a>
+    </div>
+  </div>
+</body>
+</html>
